@@ -141,7 +141,7 @@ Proyecto educativo y demostrativo. Uso permitido con atribución al autor.
 ## 👤 Autor
 
 **CMSR92**  
-Dashboard Avanzado de Analytics Ecommerce Global  
+Dashboard Avanzado de Análisis Global de E-commers  
 Version 4.0 - Octubre 2025
 
 ---
