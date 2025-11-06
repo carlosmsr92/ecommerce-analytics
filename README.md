@@ -1,4 +1,4 @@
-# 📊 Analytics Ecommerce Global - Dashboard v4.0
+# 📊 Análisis Global de E-commers
 
 **Dashboard profesional de Business Intelligence con Machine Learning y Análisis Estadístico para E-commerce Global**
 
@@ -21,7 +21,7 @@ Plataforma avanzada de Business Intelligence que analiza más de **774,000 trans
 ---
 ### Acceso
 
-- **Dashboard:** http://localhost:5000
+- **Dashboard:** https://ecommers.streamlit.app/
 ---
 
 ## 📦 Estructura del Proyecto
