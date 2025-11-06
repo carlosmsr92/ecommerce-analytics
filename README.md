@@ -19,74 +19,9 @@ Plataforma avanzada de Business Intelligence que analiza más de **774,000 trans
 - **Filtros Avanzados** multi-dimensionales con selector personalizado de fechas
 
 ---
-
-## 🚀 Deployment en Streamlit Cloud
-
-### Paso 1: Preparar Repositorio Git
-
-```bash
-# Clonar o crear repositorio
-git clone https://github.com/tu-usuario/analytics-ecommerce.git
-cd analytics-ecommerce
-
-# Agregar archivos
-git add .
-git commit -m "Dashboard v4.0 - Production Ready"
-git push origin main
-```
-
-### Paso 2: Configurar en Streamlit Cloud
-
-1. Ve a [share.streamlit.io](https://share.streamlit.io)
-2. Conecta tu cuenta de GitHub
-3. Click en "New app"
-4. Selecciona:
-   - **Repository:** `tu-usuario/analytics-ecommerce`
-   - **Branch:** `main`
-   - **Main file path:** `app.py`
-5. Click en "Deploy"
-
-### Paso 3: Configuración Avanzada (Opcional)
-
-En "Advanced settings":
-- **Python version:** 3.11
-- **Requirements file:** `requirements.txt`
-
----
-
-## 💻 Instalación Local
-
-### Requisitos
-
-- Python 3.11+
-- PostgreSQL (opcional, usa Parquet por defecto)
-
-### Instalación
-
-```bash
-# 1. Clonar repositorio
-git clone https://github.com/tu-usuario/analytics-ecommerce.git
-cd analytics-ecommerce
-
-# 2. Crear entorno virtual
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-
-# 3. Instalar dependencias
-pip install -r requirements.txt
-
-# 4. Ejecutar Dashboard
-streamlit run app.py --server.port 5000
-
-# 5. Ejecutar API (opcional, en otra terminal)
-python -m uvicorn api.main:app --host 0.0.0.0 --port 8000
-```
-
 ### Acceso
 
 - **Dashboard:** http://localhost:5000
-- **API Docs:** http://localhost:8000/docs
-
 ---
 
 ## 📦 Estructura del Proyecto
@@ -165,23 +100,6 @@ DATABASE_URL=postgresql://user:password@host:port/database
 SESSION_SECRET=tu_secret_key_aqui
 ```
 
-### Configuración de Streamlit
-
-Archivo `.streamlit/config.toml`:
-
-```toml
-[server]
-port = 5000
-enableCORS = false
-enableXsrfProtection = true
-
-[theme]
-base = "dark"
-primaryColor = "#667eea"
-```
-
----
-
 ## 📊 Datos
 
 ### Fuentes de Datos
@@ -221,23 +139,6 @@ primaryColor = "#667eea"
 
 ---
 
-## 📝 Changelog
-
-### v4.0 (Octubre 2025)
-- ✅ Eliminado Prophet (Meta) por problemas de compatibilidad
-- ✅ Nuevo sistema de análisis estadístico robusto
-- ✅ Selector personalizado de fechas con calendarios
-- ✅ Eliminadas alertas automáticas de desaceleración
-- ✅ Mejoras de UX y performance
-- ✅ Optimizado para Streamlit Cloud
-
-### v3.1 (Anterior)
-- Prophet forecasting (deprecado)
-- 9 tabs de análisis
-- ML capabilities básicas
-
----
-
 ## 🤝 Contribuciones
 
 Este es un proyecto personal de **CMSR92**. Si encuentras bugs o tienes sugerencias, abre un issue.
@@ -257,15 +158,4 @@ Dashboard Avanzado de Analytics Ecommerce Global
 Version 4.0 - Octubre 2025
 
 ---
-
-## 🔗 Links Útiles
-
-- [Streamlit Documentation](https://docs.streamlit.io)
-- [Plotly Documentation](https://plotly.com/python/)
-- [FastAPI Documentation](https://fastapi.tiangolo.com)
-
----
-
-**¿Preguntas?** Abre un issue en el repositorio.
-
 **Desarrollado con ❤️ para la comunidad de Data Science y Business Intelligence**
