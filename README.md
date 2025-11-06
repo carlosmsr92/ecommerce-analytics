@@ -87,18 +87,6 @@ analytics-ecommerce/
 
 ---
 
-## 🔧 Configuración
-
-### Variables de Entorno (Opcional)
-
-```bash
-# PostgreSQL (si no usas Parquet)
-DATABASE_URL=postgresql://user:password@host:port/database
-
-# API
-SESSION_SECRET=tu_secret_key_aqui
-```
-
 ## 📊 Datos
 
 ### Fuentes de Datos
