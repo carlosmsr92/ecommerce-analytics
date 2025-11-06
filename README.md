@@ -19,11 +19,10 @@ Plataforma avanzada de Business Intelligence que analiza más de **774,000 trans
 - **Filtros Avanzados** multi-dimensionales con selector personalizado de fechas
 
 ---
-### Acceso
+### Dashboard:
 
-- **Dashboard:** https://ecommers.streamlit.app/
----
-
+- 🔗 [Ver Dashboard](https://ecommers.streamlit.app/)
+  
 ## 📦 Estructura del Proyecto
 
 ```
