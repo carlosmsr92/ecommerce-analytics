@@ -457,13 +457,9 @@ def _negritas(texto):
 
 def crear_insight(titulo, contenido):
     """Crea un cuadro de insight accionable"""
+    # En una sola línea: con líneas en blanco o indentadas, markdown cierra el bloque HTML y muestra el resto como código
     cabecera = f"<h5>💡 {titulo}</h5>" if titulo else ""
-    st.markdown(f"""
-    <div class="insight-box">
-        {cabecera}
-        <p>{_negritas(contenido)}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f'<div class="insight-box">{cabecera}<p>{_negritas(contenido)}</p></div>', unsafe_allow_html=True)
 
 def crear_recomendaciones(titulo, recomendaciones):
     """
