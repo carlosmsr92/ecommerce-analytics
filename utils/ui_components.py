@@ -3,7 +3,9 @@ Componentes UI Reutilizables para Dashboard
 Autor: cmsr92
 """
 
+import base64
 import re
+from pathlib import Path
 
 import streamlit as st
 import plotly.graph_objects as go
@@ -67,24 +69,20 @@ def crear_seccion_titulo(titulo, icono="📊"):
     """Crea un título de sección profesional"""
     st.markdown(f'<div class="seccion-titulo">{icono} {titulo}</div>', unsafe_allow_html=True)
 
+LOGO = Path(__file__).resolve().parent.parent / "assets" / "logo_cmsr92.png"
+
 def crear_header_principal(titulo, subtitulo):
-    """Crea el header principal del dashboard"""
-    st.markdown(f"""
-    <div class="header-principal">
-        <h1>{titulo}</h1>
-        <p>{subtitulo}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    """Crea el header principal del dashboard, con el logo CMSR92 en blanco (PNG transparente + filtro CSS)"""
+    logo = (f'<img class="logo-cmsr92" alt="CMSR92" src="data:image/png;base64,{base64.b64encode(LOGO.read_bytes()).decode()}">'
+            if LOGO.exists() else "")
+    st.markdown(f'<div class="header-principal">{logo}<h1>{titulo}</h1><p>{subtitulo}</p></div>', unsafe_allow_html=True)
 
 def crear_pie_pagina():
     """Crea el pie de página con firma CMSR92"""
     st.markdown("""
     <div class="pie-pagina">
-        <p>Dashboard Avanzado de Analytics Ecommerce Global</p>
-        <p class="firma-autor">✨ Desarrollado por CMSR92 ✨</p>
-        <p style="font-size: 0.85rem; margin-top: 1rem;">
-            © 2025 - Plataforma de Business Intelligence con Machine Learning e Inteligencia Artificial
-        </p>
+        <p>Analítica global de e-commerce</p>
+        <p class="firma-autor">Carlos Manuel Suárez Rivero · CMSR92</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -168,8 +166,24 @@ def aplicar_estilos_globales():
             text-align: center;
         }
         
+        /* Texto blanco también en los elementos internos que crea Streamlit (span), que la regla global de color pisaba */
+        .header-principal h1, .header-principal h1 * {
+            color: white !important;
+        }
+
+        .header-principal p, .header-principal p * {
+            color: rgba(255,255,255,0.95) !important;
+        }
+
+        .header-principal .logo-cmsr92 {
+            height: 46px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            margin-bottom: 1rem;
+        }
+
         .header-principal h1 {
-            color: white;
+            color: white !important;  /* el tema claro de Streamlit lo pintaba en azul oscuro sobre el morado */
             font-size: 2.8rem;
             font-weight: 800;
             margin: 0;
