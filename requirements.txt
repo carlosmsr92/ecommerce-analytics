@@ -1,18 +1,10 @@
-# Analytics Ecommerce Global - Dashboard Requirements
-streamlit>=1.28.0
-fastapi>=0.104.0
-uvicorn>=0.24.0
-pandas>=2.1.0
-numpy>=1.24.0
-plotly>=5.17.0
-matplotlib>=3.8.0
-seaborn>=0.13.0
-folium>=0.15.0
-streamlit-folium>=0.15.0
-scikit-learn>=1.3.0
-xgboost>=2.0.0
-sqlalchemy>=2.0.0
-psycopg2-binary>=2.9.9
-faker>=20.0.0
-reportlab>=4.0.0
-openpyxl>=3.1.0
+# Dashboard Streamlit (lo que instala Streamlit Community Cloud).
+# La API y la base de datos opcionales tienen sus dependencias en requirements-api.txt.
+streamlit>=1.50,<2      # width="stretch" en gráficos, tablas y botones
+pandas>=2.1
+numpy>=1.24
+pyarrow>=14
+plotly>=5.17
+folium>=0.15
+streamlit-folium>=0.15
+scikit-learn>=1.3

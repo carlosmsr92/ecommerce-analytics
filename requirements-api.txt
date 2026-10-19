@@ -1,0 +1,8 @@
+# API REST opcional (FastAPI) con PostgreSQL y exportación de informes. No la usa el dashboard.
+-r requirements.txt
+fastapi>=0.104
+uvicorn>=0.24
+sqlalchemy>=2.0
+psycopg2-binary>=2.9.9
+reportlab>=4.0
+openpyxl>=3.1

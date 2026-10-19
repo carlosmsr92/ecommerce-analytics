@@ -47,7 +47,7 @@ def crear_filtros_sidebar(transacciones_df):
         )
         
         # Fechas límite del histórico
-        fecha_min_historico = datetime(2015, 10, 29)
+        fecha_min_historico = pd.Timestamp(transacciones_df['date'].min()).to_pydatetime().replace(hour=0, minute=0, second=0)
         fecha_max_historico = datetime.combine(pd.Timestamp(transacciones_df['date'].max()).date(), datetime.max.time())
         
         if tipo_periodo == 'Personalizado':

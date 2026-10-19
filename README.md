@@ -9,7 +9,7 @@
 
 ## 🎯 Descripción
 
-Plataforma avanzada de Business Intelligence que analiza más de **774,000 transacciones** (2015-2025) con capacidades de:
+Plataforma avanzada de Business Intelligence que analiza **472.211 transacciones** (diciembre de 2010 a octubre de 2025) con capacidades de:
 
 - **9 Tabs de Análisis** interactivos y profesionales
 - **4 Modelos de Machine Learning** (Isolation Forest, K-Means, Correlación, Recomendaciones)
@@ -25,7 +25,8 @@ Plataforma avanzada de Business Intelligence que analiza más de **774,000 trans
 ```
 ecommerce-analytics/
 ├── app.py                          # Dashboard principal (Streamlit)
-├── requirements.txt                # Dependencias Python
+├── requirements.txt                # Dependencias del dashboard
+├── requirements-api.txt            # Dependencias de la API y PostgreSQL (opcionales)
 │
 ├── api/
 │   ├── main.py                     # API RESTful (FastAPI, opcional)
@@ -78,7 +79,7 @@ ecommerce-analytics/
 
 ### 3. **Filtros Avanzados**
 
-- **Selector Personalizado de Fechas** (29/10/2015 - 26/10/2025)
+- **Selector personalizado de fechas** dentro del rango con datos (01/12/2010 - 24/10/2025)
 - Presets: 7 días, 30 días, 90 días, 1 año, histórico completo (contados hacia atrás desde la última fecha con datos)
 - Filtros multidimensionales:
   - Geografía (países, regiones)
@@ -93,9 +94,10 @@ ecommerce-analytics/
 
 ### Fuentes de Datos
 
-- **Transactions:** 774,434 registros (541,909 reales + 232,525 sintéticos)
-- **Customers:** 100,000 clientes únicos
-- **Products:** 1,000 productos en 15 categorías
+- **Transacciones:** 472.211 registros. Las de 2010-2011 proceden del dataset público *Online Retail* (UCI); las de
+  2012-2025 son sintéticas, generadas para extender la serie temporal.
+- **Clientes:** 4.338 clientes únicos de 43 países
+- **Productos:** 29.120 productos en 8 categorías
 
 ### Formato
 
@@ -117,6 +119,13 @@ ecommerce-analytics/
 pip install -r requirements.txt
 streamlit run app.py
 ```
+
+Para la API opcional: `pip install -r requirements-api.txt` y `uvicorn api.main:app`.
+
+## Desplegar en Streamlit Community Cloud
+
+Repositorio `carlosmsr92/ecommerce-analytics`, rama `main`, archivo principal **`app.py`**. Los datos se leen de los
+Parquet de `data/`; no hace falta base de datos.
 
 ---
 

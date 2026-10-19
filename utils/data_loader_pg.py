@@ -1,7 +1,5 @@
 import pandas as pd
 import streamlit as st
-from sqlalchemy import text
-from database.schema import get_engine, get_session
 from datetime import datetime, timedelta
 from utils.traducciones import (
     aplicar_traducciones_df, 
@@ -13,7 +11,6 @@ from utils.traducciones import (
     aplicar_traducciones_segmentos_clientes_df
 )
 
-@st.cache_data(ttl=60)
 def load_data_from_postgres():
     """Carga datos desde archivos unificados (Parquet) o PostgreSQL - con consolidación de variantes de países"""
     import os
@@ -98,9 +95,12 @@ def load_data_from_postgres():
             return transactions_df, customers_df, products_df
             
         except Exception as e:
-            pass
-    
-    # Fallback a PostgreSQL
+            # Sin esto, un fallo al leer los Parquet pasaba desapercibido y la app esperaba a una base de datos inexistente
+            st.error(f"No se pudieron leer los datos Parquet: {e}")
+            return None, None, None
+
+    # Fallback a PostgreSQL (solo si no hay Parquet): se importa aquí para no exigir SQLAlchemy al dashboard
+    from database.schema import get_engine
     engine = get_engine()
     
     try:
@@ -185,11 +185,21 @@ def load_data_from_postgres():
         st.error(f"Error loading data: {str(e)}")
         return None, None, None
 
-@st.cache_data
+def _optimizar_memoria(df):
+    """Columnas de texto con pocos valores distintos (país, categoría, método de pago...) como 'category'.
+
+    Reduce mucho la memoria, clave en Streamlit Community Cloud, donde pasarse del límite reinicia la app.
+    """
+    if df is None:
+        return df
+    for col in df.columns:
+        if (df[col].dtype == object or str(df[col].dtype).startswith("str")) and df[col].nunique() < 0.5 * len(df):
+            df[col] = df[col].astype("category")
+    return df
+
 def load_or_generate_data():
-    """Carga datos desde fuente disponible"""
-    # Cargar directamente sin mensajes
-    return load_data_from_postgres()
+    """Carga datos desde fuente disponible (la caché está en app.py: una sola copia en memoria)"""
+    return tuple(_optimizar_memoria(df) for df in load_data_from_postgres())
 
 def filter_data(df, filters):
     """Aplica filtros al DataFrame"""

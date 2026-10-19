@@ -53,7 +53,7 @@ LABELS = obtener_labels_profesionales()
 # Aplicar estilos globales con detección automática de tema del navegador
 aplicar_estilos_globales()
 
-@st.cache_data(ttl=60)
+@st.cache_data(show_spinner="Cargando datos...")  # datos estáticos: sin ttl, que recargaba todo cada minuto
 def cargar_datos():
     return load_or_generate_data()
 
@@ -367,7 +367,7 @@ with tab_overview:
     fig_evolucion.update_xaxes(showgrid=True, gridcolor='rgba(0,0,0,0.05)')
     fig_evolucion.update_yaxes(showgrid=True, gridcolor='rgba(0,0,0,0.05)')
     
-    st.plotly_chart(fig_evolucion, use_container_width=True)
+    st.plotly_chart(fig_evolucion, width="stretch")
     
     crear_seccion_titulo("Distribuciones Clave")
     
@@ -392,7 +392,7 @@ with tab_overview:
             paper_bgcolor='rgba(0,0,0,0)'
         )
         fig_paises.update_traces(hovertemplate='<b>%{y}</b><br>Ingresos: $%{x:,.0f}<extra></extra>')
-        st.plotly_chart(fig_paises, use_container_width=True)
+        st.plotly_chart(fig_paises, width="stretch")
     
     with col_dist2:
         por_categoria = datos_filtrados.groupby('category')['total_amount_usd'].sum().reset_index()
@@ -414,7 +414,7 @@ with tab_overview:
             textinfo='percent+label',
             hovertemplate='<b>%{label}</b><br>Ingresos: $%{value:,.0f}<br>Porcentaje: %{percent}<extra></extra>'
         )
-        st.plotly_chart(fig_categorias, use_container_width=True)
+        st.plotly_chart(fig_categorias, width="stretch")
 
 with tab_geografia:
     crear_descripcion_seccion(
@@ -481,7 +481,7 @@ with tab_geografia:
             margin=dict(l=0, r=0, t=30, b=0),
             geo=dict(showframe=False, showcoastlines=True, projection_type='natural earth')
         )
-        st.plotly_chart(fig_mapa, use_container_width=True)
+        st.plotly_chart(fig_mapa, width="stretch")
     
     with col2:
         st.subheader("Top 15 Países")
@@ -503,7 +503,7 @@ with tab_geografia:
             showlegend=False,
             yaxis={'categoryorder': 'total ascending'}
         )
-        st.plotly_chart(fig_top, use_container_width=True)
+        st.plotly_chart(fig_top, width="stretch")
     
     col3, col4 = st.columns(2)
     
@@ -531,7 +531,7 @@ with tab_geografia:
         )
         
         fig_tree.update_layout(height=400)
-        st.plotly_chart(fig_tree, use_container_width=True)
+        st.plotly_chart(fig_tree, width="stretch")
     
     with col4:
         st.subheader("Concentración de Ventas")
@@ -553,7 +553,7 @@ with tab_geografia:
         )
         fig_pie.update_traces(hovertemplate='<b>%{label}</b><br>Ingresos: $%{value:,.0f}<br>Porcentaje: %{percent}<extra></extra>')
         fig_pie.update_layout(height=400)
-        st.plotly_chart(fig_pie, use_container_width=True)
+        st.plotly_chart(fig_pie, width="stretch")
 
 with tab_rendimiento:
     crear_descripcion_seccion(
@@ -606,7 +606,7 @@ with tab_rendimiento:
     fig_tiempo.update_yaxes(title_text="Pedidos", secondary_y=True)
     fig_tiempo.update_layout(height=400, title='Evolución de Ingresos y Pedidos')
     
-    st.plotly_chart(fig_tiempo, use_container_width=True)
+    st.plotly_chart(fig_tiempo, width="stretch")
     
     #Análisis de Crecimiento y Momentum
     st.markdown("<br>", unsafe_allow_html=True)
@@ -759,7 +759,7 @@ with tab_rendimiento:
             )
         )
         
-        st.plotly_chart(fig_tendencias, use_container_width=True)
+        st.plotly_chart(fig_tendencias, width="stretch")
     
     col_dist1, col_dist2 = st.columns(2)
     
@@ -785,7 +785,7 @@ with tab_rendimiento:
         )
         fig_dias.update_layout(height=400, showlegend=False)
         fig_dias.update_traces(hovertemplate='<b>%{x}</b><br>Ingresos: $%{y:,.0f}<extra></extra>')
-        st.plotly_chart(fig_dias, use_container_width=True)
+        st.plotly_chart(fig_dias, width="stretch")
     
     with col_dist2:
         st.subheader("Distribución de Ingresos por Hora")
@@ -806,7 +806,7 @@ with tab_rendimiento:
             hovertemplate='<b>Hora %{x}:00</b><br>Ingresos: $%{y:,.0f}<extra></extra>'
         )
         fig_horas.update_layout(height=400)
-        st.plotly_chart(fig_horas, use_container_width=True)
+        st.plotly_chart(fig_horas, width="stretch")
 
 with tab_productos:
     crear_descripcion_seccion(
@@ -844,7 +844,7 @@ with tab_productos:
     )
     fig_productos.update_traces(hovertemplate='<b>%{y}</b><br>Categoría: %{customdata[0]}<br>Ingresos: $%{x:,.0f}<br>Beneficio: $%{customdata[1]:,.0f}<extra></extra>')
     fig_productos.update_layout(height=500, yaxis={'categoryorder': 'total ascending'})
-    st.plotly_chart(fig_productos, use_container_width=True)
+    st.plotly_chart(fig_productos, width="stretch")
     
     st.subheader("Top 15 Productos Más Comprados")
     
@@ -867,7 +867,7 @@ with tab_productos:
     )
     fig_comprados.update_traces(hovertemplate='<b>%{y}</b><br>Categoría: %{customdata[0]}<br>Unidades: %{x:,.0f}<br>Transacciones: %{customdata[1]:,.0f}<extra></extra>')
     fig_comprados.update_layout(height=450, yaxis={'categoryorder': 'total ascending'})
-    st.plotly_chart(fig_comprados, use_container_width=True)
+    st.plotly_chart(fig_comprados, width="stretch")
     
     col1, col2 = st.columns(2)
     
@@ -893,7 +893,7 @@ with tab_productos:
         )
         
         fig_tree_cat.update_layout(height=400)
-        st.plotly_chart(fig_tree_cat, use_container_width=True)
+        st.plotly_chart(fig_tree_cat, width="stretch")
     
     with col2:
         st.subheader("Margen por Categoría")
@@ -914,7 +914,7 @@ with tab_productos:
         )
         fig_margen.update_traces(hovertemplate='<b>%{x}</b><br>Margen: %{y:.1f}%<extra></extra>')
         fig_margen.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_margen, use_container_width=True)
+        st.plotly_chart(fig_margen, width="stretch")
     
     st.subheader("Análisis de Performance de Productos (Matriz BCG)")
     
@@ -987,7 +987,7 @@ with tab_productos:
             x=0.99
         )
     )
-    st.plotly_chart(fig_bcg, use_container_width=True)
+    st.plotly_chart(fig_bcg, width="stretch")
     
     col_resumen = st.columns(4)
     for idx, cuadrante in enumerate(['Alto Rendimiento', 'Consolidados', 'Alto Potencial', 'En Evaluación']):
@@ -1026,7 +1026,7 @@ with tab_clientes:
         )
         fig_rfm.update_traces(hovertemplate='<b>%{x}</b><br>Clientes: %{y:,}<extra></extra>')
         fig_rfm.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_rfm, use_container_width=True)
+        st.plotly_chart(fig_rfm, width="stretch")
     
     with col2:
         fig_rfm_pie = px.pie(
@@ -1041,7 +1041,7 @@ with tab_clientes:
             textinfo='percent+label'
         )
         fig_rfm_pie.update_layout(height=400)
-        st.plotly_chart(fig_rfm_pie, use_container_width=True)
+        st.plotly_chart(fig_rfm_pie, width="stretch")
     
     st.subheader("Valor de Vida del Cliente (LTV)")
     
@@ -1064,7 +1064,7 @@ with tab_clientes:
     )
     fig_ltv_dist.update_traces(hovertemplate='LTV: $%{x:,.0f}<br>Clientes: %{y:,}<extra></extra>')
     fig_ltv_dist.update_layout(height=400, showlegend=False)
-    st.plotly_chart(fig_ltv_dist, use_container_width=True)
+    st.plotly_chart(fig_ltv_dist, width="stretch")
     
     if filtros.get('mostrar_ml') and len(datos_filtrados) > 100:
         crear_seccion_titulo("Segmentación Inteligente de Clientes (K-Means)")
@@ -1140,7 +1140,7 @@ with tab_clientes:
                     marker=dict(size=5, opacity=0.7)
                 )
                 
-                st.plotly_chart(fig_clusters, use_container_width=True)
+                st.plotly_chart(fig_clusters, width="stretch")
                 
                 col_cluster = st.columns(4)
                 cluster_counts = {}
@@ -1256,7 +1256,7 @@ with tab_clientes:
             xaxis_title="Probabilidad de Abandono",
             yaxis_title="Cantidad de Clientes"
         )
-        st.plotly_chart(fig_churn, use_container_width=True)
+        st.plotly_chart(fig_churn, width="stretch")
     
     with col_churn2:
         churn_alto = len(clientes_filt[clientes_filt['churn_probability'] > 0.7])
@@ -1281,7 +1281,7 @@ with tab_clientes:
             textinfo='percent+label'
         )
         fig_churn_pie.update_layout(height=400)
-        st.plotly_chart(fig_churn_pie, use_container_width=True)
+        st.plotly_chart(fig_churn_pie, width="stretch")
     
     # Insights accionables
     total_clientes_analisis = len(clientes_filt)
@@ -1334,7 +1334,7 @@ with tab_canal:
             textinfo='percent+label'
         )
         fig_dispositivos.update_layout(height=400)
-        st.plotly_chart(fig_dispositivos, use_container_width=True)
+        st.plotly_chart(fig_dispositivos, width="stretch")
     
     with col2:
         st.subheader("Fuentes de Tráfico")
@@ -1351,7 +1351,7 @@ with tab_canal:
         )
         fig_trafico.update_traces(hovertemplate='<b>%{x}</b><br>Ingresos: $%{y:,.0f}<extra></extra>')
         fig_trafico.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_trafico, use_container_width=True)
+        st.plotly_chart(fig_trafico, width="stretch")
     
     st.subheader("Métodos de Pago")
     
@@ -1382,7 +1382,7 @@ with tab_canal:
         yaxis_title="Ingresos (USD)",
         xaxis_title="Método de Pago"
     )
-    st.plotly_chart(fig_pagos, use_container_width=True)
+    st.plotly_chart(fig_pagos, width="stretch")
     
     st.subheader("Flujo de Conversión (Diagrama Sankey)")
     
@@ -1431,7 +1431,7 @@ with tab_canal:
             height=500,
             font=dict(size=11)
         )
-        st.plotly_chart(fig_sankey, use_container_width=True)
+        st.plotly_chart(fig_sankey, width="stretch")
     except Exception as e:
         st.warning(f"No se pudo generar diagrama Sankey: {str(e)}")
 
@@ -1475,7 +1475,7 @@ with tab_ml:
                         color_discrete_map={True: '#EF4444', False: '#10B981'}
                     )
                     fig_anomalias.update_layout(height=500)
-                    st.plotly_chart(fig_anomalias, use_container_width=True)
+                    st.plotly_chart(fig_anomalias, width="stretch")
                 
                 with col2:
                     num_anomalias = datos_anomalias['es_anomalia'].sum()
@@ -1523,7 +1523,7 @@ with tab_ml:
             )
             fig_corr.update_layout(height=500)
             fig_corr.update_traces(hovertemplate='<b>%{x}</b> vs <b>%{y}</b><br>Correlación: %{z:.2f}<extra></extra>')
-            st.plotly_chart(fig_corr, use_container_width=True)
+            st.plotly_chart(fig_corr, width="stretch")
         except Exception as e:
             st.warning(f"No se pudo generar matriz de correlación: {str(e)}")
         
@@ -1546,7 +1546,7 @@ with tab_ml:
             )
             fig_recomendaciones.update_traces(hovertemplate='<b>%{y}</b><br>Compras: %{x:,}<extra></extra>')
             fig_recomendaciones.update_layout(height=500, yaxis={'categoryorder': 'total ascending'})
-            st.plotly_chart(fig_recomendaciones, use_container_width=True)
+            st.plotly_chart(fig_recomendaciones, width="stretch")
         except Exception as e:
             st.warning(f"No se pudo generar análisis de recomendaciones: {str(e)}")
 
@@ -1610,7 +1610,7 @@ with tab_finanzas:
             xaxis_title="",
             margin=dict(t=100, b=50)
         )
-        st.plotly_chart(fig_waterfall, use_container_width=True)
+        st.plotly_chart(fig_waterfall, width="stretch")
     except Exception as e:
         st.warning(f"No se pudo generar waterfall: {str(e)}")
     
@@ -1635,7 +1635,7 @@ with tab_finanzas:
         )
         fig_margenes.update_traces(hovertemplate='<b>%{x}</b><br>Margen: %{y:.1f}%<extra></extra>')
         fig_margenes.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_margenes, use_container_width=True)
+        st.plotly_chart(fig_margenes, width="stretch")
     
     with col_fin2:
         st.subheader("Evolución del Beneficio Mensual")
@@ -1721,7 +1721,7 @@ with tab_finanzas:
                 x=1
             )
         )
-        st.plotly_chart(fig_beneficio, use_container_width=True)
+        st.plotly_chart(fig_beneficio, width="stretch")
     
     st.subheader("Métricas Financieras Avanzadas")
     
@@ -1800,7 +1800,7 @@ with tab_operacional:
             showlegend=False,
             xaxis_title="Día de la Semana"
         )
-        st.plotly_chart(fig_dias_op, use_container_width=True)
+        st.plotly_chart(fig_dias_op, width="stretch")
     
     with col_op_viz2:
         st.subheader("Distribución de Cantidad por Pedido")
@@ -1815,7 +1815,7 @@ with tab_operacional:
         )
         fig_cantidad.update_traces(hovertemplate='Unidades: %{x:,.0f}<br>Pedidos: %{y:,}<extra></extra>')
         fig_cantidad.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_cantidad, use_container_width=True)
+        st.plotly_chart(fig_cantidad, width="stretch")
     
     st.subheader("⏱️ Análisis de Velocidad de Ventas")
     
@@ -1855,7 +1855,7 @@ with tab_operacional:
     fig_velocidad.update_yaxes(title_text="Unidades", secondary_y=True)
     fig_velocidad.update_layout(height=400, title='Velocidad de Ventas Diaria')
     
-    st.plotly_chart(fig_velocidad, use_container_width=True)
+    st.plotly_chart(fig_velocidad, width="stretch")
     
     st.subheader("🏆 Top Productos por Rotación")
     
@@ -1884,6 +1884,6 @@ with tab_operacional:
     )
     fig_rotacion.update_traces(hovertemplate='<b>%{y}</b><br>Categoría: %{customdata[0]}<br>Velocidad: %{x:,.0f}<br>Unidades: %{customdata[1]:,.0f}<extra></extra>')
     fig_rotacion.update_layout(height=500, yaxis={'categoryorder': 'total ascending'})
-    st.plotly_chart(fig_rotacion, use_container_width=True)
+    st.plotly_chart(fig_rotacion, width="stretch")
 
 crear_pie_pagina()
