@@ -8,6 +8,8 @@ import re
 from pathlib import Path
 
 import streamlit as st
+
+from utils.formato import fni, fn0, fn1, fsn1
 import plotly.graph_objects as go
 from datetime import datetime
 
@@ -35,11 +37,11 @@ def crear_tarjeta_kpi(icono, etiqueta, valor, cambio=None, formato='numero', col
         col: Columna de streamlit donde renderizar (opcional)
     """
     if formato == 'moneda':
-        valor_formateado = f"${valor:,.0f}"
+        valor_formateado = f"${fn0(valor)}"
     elif formato == 'porcentaje':
-        valor_formateado = f"{valor:.1f}%"
+        valor_formateado = f"{fn1(valor)}%"
     else:
-        valor_formateado = f"{valor:,}" if isinstance(valor, (int, float)) else str(valor)
+        valor_formateado = f"{fni(valor)}" if isinstance(valor, (int, float)) else str(valor)
     
     html_cambio = ""
     if cambio is not None:
@@ -47,7 +49,7 @@ def crear_tarjeta_kpi(icono, etiqueta, valor, cambio=None, formato='numero', col
         clase_cambio = "positivo" if cambio >= 0 else "negativo"
         html_cambio = f'''
         <div class="kpi-cambio {clase_cambio}">
-            {icono_tendencia} {abs(cambio):.1f}% vs periodo anterior
+            {icono_tendencia} {fn1(abs(cambio))}% vs periodo anterior
         </div>
         '''
     
@@ -89,18 +91,18 @@ def crear_pie_pagina():
 def crear_metrica_comparativa(titulo, valor_actual, valor_anterior, formato='numero'):
     """Crea una métrica con comparación visual"""
     if formato == 'moneda':
-        actual_str = f"${valor_actual:,.0f}"
-        anterior_str = f"${valor_anterior:,.0f}"
+        actual_str = f"${fn0(valor_actual)}"
+        anterior_str = f"${fn0(valor_anterior)}"
     elif formato == 'porcentaje':
-        actual_str = f"{valor_actual:.1f}%"
-        anterior_str = f"{valor_anterior:.1f}%"
+        actual_str = f"{fn1(valor_actual)}%"
+        anterior_str = f"{fn1(valor_anterior)}%"
     else:
-        actual_str = f"{valor_actual:,}"
-        anterior_str = f"{valor_anterior:,}"
+        actual_str = f"{fni(valor_actual)}"
+        anterior_str = f"{fni(valor_anterior)}"
     
     if valor_anterior > 0:
         cambio = ((valor_actual - valor_anterior) / valor_anterior) * 100
-        delta_str = f"{cambio:+.1f}%"
+        delta_str = f"{fsn1(cambio)}%"
     else:
         delta_str = "N/A"
     
@@ -495,6 +497,6 @@ def mostrar_info_dataset(num_transacciones, num_clientes, num_productos, fecha_m
     """Muestra información resumida del dataset"""
     años = fecha_max.year - fecha_min.year + 1
     st.info(f"""
-    📊 **Dataset Actual:** {num_transacciones:,} transacciones | {num_clientes:,} clientes | {num_productos:,} productos  
+    📊 **Dataset Actual:** {fni(num_transacciones)} transacciones | {fni(num_clientes)} clientes | {fni(num_productos)} productos  
     📅 **Periodo:** {fecha_min.strftime('%d/%m/%Y')} - {fecha_max.strftime('%d/%m/%Y')} ({años} años)
     """)

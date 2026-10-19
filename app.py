@@ -46,6 +46,7 @@ from utils.ui_components import (
 from utils.filtros import crear_filtros_sidebar, aplicar_filtros
 from utils.data_loader_pg import load_or_generate_data
 from utils.traducciones import obtener_labels_profesionales
+from utils.formato import fn0, fn1, fn2, fni, fsn1, fsn2, grafico, variacion
 
 # Labels profesionales para gráficos
 LABELS = obtener_labels_profesionales()
@@ -70,6 +71,12 @@ crear_header_principal(
 
 filtros = crear_filtros_sidebar(transacciones_df)
 datos_filtrados = aplicar_filtros(transacciones_df, filtros)
+
+# Periodo anterior de la misma duración y con los mismos filtros: base de las variaciones de las pestañas financiera y operativa
+filtros_anteriores = filtros.copy()
+filtros_anteriores['fecha_inicio'] = filtros['fecha_inicio'] - (filtros['fecha_fin'] - filtros['fecha_inicio'])
+filtros_anteriores['fecha_fin'] = filtros['fecha_inicio'] - pd.Timedelta(days=1)
+datos_anteriores = aplicar_filtros(transacciones_df, filtros_anteriores)
 
 if len(datos_filtrados) == 0:
     st.warning("⚠️ No hay datos que coincidan con los filtros seleccionados. Ajusta los criterios de búsqueda.")
@@ -144,27 +151,27 @@ with tab_overview:
     with col1:
         st.metric(
             label="💰 Ingresos Totales",
-            value=f"${ingresos_totales:,.0f}",
-            delta=f"{cambio_ingresos:+.1f}%" if ingresos_anteriores > 0 else None
+            value=f"${fn0(ingresos_totales)}",
+            delta=f"{fsn1(cambio_ingresos)}%" if ingresos_anteriores > 0 else None
         )
     
     with col2:
         st.metric(
             label="🛒 Pedidos Totales",
-            value=f"{pedidos_totales:,}",
-            delta=f"{cambio_pedidos:+.1f}%" if pedidos_anteriores > 0 else None
+            value=f"{fni(pedidos_totales)}",
+            delta=f"{fsn1(cambio_pedidos)}%" if pedidos_anteriores > 0 else None
         )
     
     with col3:
         st.metric(
             label="🎯 Ticket Promedio (AOV)",
-            value=f"${ticket_promedio:,.0f}"
+            value=f"${fn0(ticket_promedio)}"
         )
     
     with col4:
         st.metric(
             label="💎 Beneficio Total",
-            value=f"${beneficio_total:,.0f}"
+            value=f"${fn0(beneficio_total)}"
         )
     
     st.markdown("<br>", unsafe_allow_html=True)
@@ -174,28 +181,28 @@ with tab_overview:
     with col5:
         st.metric(
             label="👥 Clientes Únicos",
-            value=f"{clientes_unicos:,}"
+            value=f"{fni(clientes_unicos)}"
         )
     
     with col6:
         productos_unicos = datos_filtrados['product_id'].nunique()
         st.metric(
             label="📦 Productos Vendidos",
-            value=f"{productos_unicos:,}"
+            value=f"{fni(productos_unicos)}"
         )
     
     with col7:
         tasa_conversion = (clientes_unicos / pedidos_totales * 100) if pedidos_totales > 0 else 0
         st.metric(
             label="🎯 Tasa de Conversión",
-            value=f"{tasa_conversion:.1f}%"
+            value=f"{fn1(tasa_conversion)}%"
         )
     
     with col8:
         items_promedio = datos_filtrados['quantity'].mean()
         st.metric(
             label="📊 Items por Pedido",
-            value=f"{items_promedio:.1f}"
+            value=f"{fn1(items_promedio)}"
         )
     
     # Sección de Insights Ejecutivos Automáticos
@@ -232,47 +239,47 @@ with tab_overview:
         # Insight 1: Rendimiento general
         if cambio_ingresos > 10:
             insights_ejecutivos.append(
-                f"📈 **Crecimiento Acelerado:** Los ingresos han crecido un {cambio_ingresos:.1f}% comparado con el período anterior, "
-                f"superando ${ingresos_totales:,.0f}. Este momentum positivo indica una fuerte demanda y efectividad en las estrategias comerciales."
+                f"📈 **Crecimiento Acelerado:** Los ingresos han crecido un {fn1(cambio_ingresos)}% comparado con el período anterior, "
+                f"superando ${fn0(ingresos_totales)}. Este momentum positivo indica una fuerte demanda y efectividad en las estrategias comerciales."
             )
         elif cambio_ingresos < -10:
             insights_ejecutivos.append(
-                f"📊 **Análisis de Variación:** Los ingresos muestran una variación de {cambio_ingresos:+.1f}% comparado con el período anterior, "
-                f"totalizando ${ingresos_totales:,.0f}. Consulta el tab 'Rendimiento & Análisis Temporal' para análisis detallado de tendencias."
+                f"📊 **Análisis de Variación:** Los ingresos muestran una variación de {fsn1(cambio_ingresos)}% comparado con el período anterior, "
+                f"totalizando ${fn0(ingresos_totales)}. Consulta el tab 'Rendimiento & Análisis Temporal' para análisis detallado de tendencias."
             )
         else:
             insights_ejecutivos.append(
-                f"📊 **Estabilidad Controlada:** Los ingresos se mantienen estables con una variación de {cambio_ingresos:+.1f}% respecto al período anterior, "
-                f"totalizando ${ingresos_totales:,.0f}. Existen oportunidades de optimización para impulsar el crecimiento."
+                f"📊 **Estabilidad Controlada:** Los ingresos se mantienen estables con una variación de {fsn1(cambio_ingresos)}% respecto al período anterior, "
+                f"totalizando ${fn0(ingresos_totales)}. Existen oportunidades de optimización para impulsar el crecimiento."
             )
         
         # Insight 2: Concentración geográfica
         if porcentaje_top_pais > 50:
             insights_ejecutivos.append(
-                f"🌍 **Concentración de Mercado:** {top_pais} representa el {porcentaje_top_pais:.1f}% de los ingresos totales "
-                f"(${ingresos_top_pais:,.0f}). Esta alta dependencia presenta riesgo. Se recomienda diversificar geográficamente."
+                f"🌍 **Concentración de Mercado:** {top_pais} representa el {fn1(porcentaje_top_pais)}% de los ingresos totales "
+                f"(${fn0(ingresos_top_pais)}). Esta alta dependencia presenta riesgo. Se recomienda diversificar geográficamente."
             )
         else:
             insights_ejecutivos.append(
-                f"🌍 **Diversificación Saludable:** {top_pais} lidera con {porcentaje_top_pais:.1f}% de ingresos, pero existe buena "
+                f"🌍 **Diversificación Saludable:** {top_pais} lidera con {fn1(porcentaje_top_pais)}% de ingresos, pero existe buena "
                 f"distribución geográfica, reduciendo el riesgo de dependencia de un solo mercado."
             )
         
         # Insight 3: Producto estrella
         insights_ejecutivos.append(
-            f"⭐ **Categoría Líder:** {top_categoria} domina el portafolio con {porcentaje_top_categoria:.1f}% de los ingresos "
-            f"(${ingresos_top_categoria:,.0f}). Reforzar inventario y marketing en esta categoría puede maximizar resultados."
+            f"⭐ **Categoría Líder:** {top_categoria} domina el portafolio con {fn1(porcentaje_top_categoria)}% de los ingresos "
+            f"(${fn0(ingresos_top_categoria)}). Reforzar inventario y marketing en esta categoría puede maximizar resultados."
         )
         
         # Insight 4: Eficiencia operativa
         if ticket_promedio > 100:
             insights_ejecutivos.append(
-                f"💎 **Alto Valor por Transacción:** El ticket promedio de ${ticket_promedio:,.0f} indica clientes de alto valor. "
+                f"💎 **Alto Valor por Transacción:** El ticket promedio de ${fn0(ticket_promedio)} indica clientes de alto valor. "
                 f"Enfocar estrategias de retención y programas VIP puede aumentar la rentabilidad."
             )
         else:
             insights_ejecutivos.append(
-                f"🎯 **Oportunidad de Upselling:** Con un ticket promedio de ${ticket_promedio:,.0f}, existe potencial para incrementar "
+                f"🎯 **Oportunidad de Upselling:** Con un ticket promedio de ${fn0(ticket_promedio)}, existe potencial para incrementar "
                 f"el valor por pedido mediante bundling, recomendaciones personalizadas y ofertas complementarias."
             )
     
@@ -367,7 +374,7 @@ with tab_overview:
     fig_evolucion.update_xaxes(showgrid=True, gridcolor='rgba(0,0,0,0.05)')
     fig_evolucion.update_yaxes(showgrid=True, gridcolor='rgba(0,0,0,0.05)')
     
-    st.plotly_chart(fig_evolucion, width="stretch")
+    grafico(fig_evolucion, width="stretch")
     
     crear_seccion_titulo("Distribuciones Clave")
     
@@ -392,7 +399,7 @@ with tab_overview:
             paper_bgcolor='rgba(0,0,0,0)'
         )
         fig_paises.update_traces(hovertemplate='<b>%{y}</b><br>Ingresos: $%{x:,.0f}<extra></extra>')
-        st.plotly_chart(fig_paises, width="stretch")
+        grafico(fig_paises, width="stretch")
     
     with col_dist2:
         por_categoria = datos_filtrados.groupby('category')['total_amount_usd'].sum().reset_index()
@@ -414,7 +421,7 @@ with tab_overview:
             textinfo='percent+label',
             hovertemplate='<b>%{label}</b><br>Ingresos: $%{value:,.0f}<br>Porcentaje: %{percent}<extra></extra>'
         )
-        st.plotly_chart(fig_categorias, width="stretch")
+        grafico(fig_categorias, width="stretch")
 
 with tab_geografia:
     crear_descripcion_seccion(
@@ -481,7 +488,7 @@ with tab_geografia:
             margin=dict(l=0, r=0, t=30, b=0),
             geo=dict(showframe=False, showcoastlines=True, projection_type='natural earth')
         )
-        st.plotly_chart(fig_mapa, width="stretch")
+        grafico(fig_mapa, width="stretch")
     
     with col2:
         st.subheader("Top 15 Países")
@@ -503,7 +510,7 @@ with tab_geografia:
             showlegend=False,
             yaxis={'categoryorder': 'total ascending'}
         )
-        st.plotly_chart(fig_top, width="stretch")
+        grafico(fig_top, width="stretch")
     
     col3, col4 = st.columns(2)
     
@@ -531,7 +538,7 @@ with tab_geografia:
         )
         
         fig_tree.update_layout(height=400)
-        st.plotly_chart(fig_tree, width="stretch")
+        grafico(fig_tree, width="stretch")
     
     with col4:
         st.subheader("Concentración de Ventas")
@@ -553,7 +560,7 @@ with tab_geografia:
         )
         fig_pie.update_traces(hovertemplate='<b>%{label}</b><br>Ingresos: $%{value:,.0f}<br>Porcentaje: %{percent}<extra></extra>')
         fig_pie.update_layout(height=400)
-        st.plotly_chart(fig_pie, width="stretch")
+        grafico(fig_pie, width="stretch")
 
 with tab_rendimiento:
     crear_descripcion_seccion(
@@ -606,7 +613,7 @@ with tab_rendimiento:
     fig_tiempo.update_yaxes(title_text="Pedidos", secondary_y=True)
     fig_tiempo.update_layout(height=400, title='Evolución de Ingresos y Pedidos')
     
-    st.plotly_chart(fig_tiempo, width="stretch")
+    grafico(fig_tiempo, width="stretch")
     
     #Análisis de Crecimiento y Momentum
     st.markdown("<br>", unsafe_allow_html=True)
@@ -646,15 +653,15 @@ with tab_rendimiento:
     with col_crec1:
         st.metric(
             "Variación vs Período Anterior",
-            f"{var_ingresos:+.1f}%",
-            delta=f"${ingresos_actual - ingresos_anterior:,.0f}"
+            f"{fsn1(var_ingresos)}%",
+            delta=f"${fn0(ingresos_actual - ingresos_anterior)}"
         )
     
     with col_crec2:
         st.metric(
             "Crecimiento en Pedidos",
-            f"{var_pedidos:+.1f}%",
-            delta=f"{pedidos_actual - pedidos_anterior:,} pedidos"
+            f"{fsn1(var_pedidos)}%",
+            delta=f"{fni(pedidos_actual - pedidos_anterior)} pedidos"
         )
     
     with col_crec3:
@@ -663,7 +670,7 @@ with tab_rendimiento:
             crecimiento_diario = var_ingresos / duracion_dias
             st.metric(
                 "Tasa Diaria Promedio",
-                f"{crecimiento_diario:+.2f}%/día"
+                f"{fsn2(crecimiento_diario)}%/día"
             )
         else:
             st.metric("Tasa Diaria Promedio", "N/A")
@@ -759,7 +766,7 @@ with tab_rendimiento:
             )
         )
         
-        st.plotly_chart(fig_tendencias, width="stretch")
+        grafico(fig_tendencias, width="stretch")
     
     col_dist1, col_dist2 = st.columns(2)
     
@@ -785,7 +792,7 @@ with tab_rendimiento:
         )
         fig_dias.update_layout(height=400, showlegend=False)
         fig_dias.update_traces(hovertemplate='<b>%{x}</b><br>Ingresos: $%{y:,.0f}<extra></extra>')
-        st.plotly_chart(fig_dias, width="stretch")
+        grafico(fig_dias, width="stretch")
     
     with col_dist2:
         st.subheader("Distribución de Ingresos por Hora")
@@ -806,7 +813,7 @@ with tab_rendimiento:
             hovertemplate='<b>Hora %{x}:00</b><br>Ingresos: $%{y:,.0f}<extra></extra>'
         )
         fig_horas.update_layout(height=400)
-        st.plotly_chart(fig_horas, width="stretch")
+        grafico(fig_horas, width="stretch")
 
 with tab_productos:
     crear_descripcion_seccion(
@@ -844,7 +851,7 @@ with tab_productos:
     )
     fig_productos.update_traces(hovertemplate='<b>%{y}</b><br>Categoría: %{customdata[0]}<br>Ingresos: $%{x:,.0f}<br>Beneficio: $%{customdata[1]:,.0f}<extra></extra>')
     fig_productos.update_layout(height=500, yaxis={'categoryorder': 'total ascending'})
-    st.plotly_chart(fig_productos, width="stretch")
+    grafico(fig_productos, width="stretch")
     
     st.subheader("Top 15 Productos Más Comprados")
     
@@ -867,7 +874,7 @@ with tab_productos:
     )
     fig_comprados.update_traces(hovertemplate='<b>%{y}</b><br>Categoría: %{customdata[0]}<br>Unidades: %{x:,.0f}<br>Transacciones: %{customdata[1]:,.0f}<extra></extra>')
     fig_comprados.update_layout(height=450, yaxis={'categoryorder': 'total ascending'})
-    st.plotly_chart(fig_comprados, width="stretch")
+    grafico(fig_comprados, width="stretch")
     
     col1, col2 = st.columns(2)
     
@@ -893,7 +900,7 @@ with tab_productos:
         )
         
         fig_tree_cat.update_layout(height=400)
-        st.plotly_chart(fig_tree_cat, width="stretch")
+        grafico(fig_tree_cat, width="stretch")
     
     with col2:
         st.subheader("Margen por Categoría")
@@ -914,7 +921,7 @@ with tab_productos:
         )
         fig_margen.update_traces(hovertemplate='<b>%{x}</b><br>Margen: %{y:.1f}%<extra></extra>')
         fig_margen.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_margen, width="stretch")
+        grafico(fig_margen, width="stretch")
     
     st.subheader("Análisis de Performance de Productos (Matriz BCG)")
     
@@ -924,7 +931,7 @@ with tab_productos:
         'transaction_id': 'count'
     }).reset_index()
     productos_bcg.columns = ['product_id', 'producto', 'ingresos', 'frecuencia']
-    productos_bcg['ingresos_formato'] = productos_bcg['ingresos'].apply(lambda x: f"${x:,.0f}")
+    productos_bcg['ingresos_formato'] = productos_bcg['ingresos'].apply(lambda x: f"${fn0(x)}")
     
     mediana_ingresos = productos_bcg['ingresos'].median()
     mediana_frecuencia = productos_bcg['frecuencia'].median()
@@ -987,7 +994,7 @@ with tab_productos:
             x=0.99
         )
     )
-    st.plotly_chart(fig_bcg, width="stretch")
+    grafico(fig_bcg, width="stretch")
     
     col_resumen = st.columns(4)
     for idx, cuadrante in enumerate(['Alto Rendimiento', 'Consolidados', 'Alto Potencial', 'En Evaluación']):
@@ -1026,7 +1033,7 @@ with tab_clientes:
         )
         fig_rfm.update_traces(hovertemplate='<b>%{x}</b><br>Clientes: %{y:,}<extra></extra>')
         fig_rfm.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_rfm, width="stretch")
+        grafico(fig_rfm, width="stretch")
     
     with col2:
         fig_rfm_pie = px.pie(
@@ -1041,18 +1048,18 @@ with tab_clientes:
             textinfo='percent+label'
         )
         fig_rfm_pie.update_layout(height=400)
-        st.plotly_chart(fig_rfm_pie, width="stretch")
+        grafico(fig_rfm_pie, width="stretch")
     
     st.subheader("Valor de Vida del Cliente (LTV)")
     
     col_ltv1, col_ltv2, col_ltv3 = st.columns(3)
     
     with col_ltv1:
-        st.metric("LTV Promedio", f"${clientes_filt['lifetime_value'].mean():,.0f}")
+        st.metric("LTV Promedio", f"${fn0(clientes_filt['lifetime_value'].mean())}")
     with col_ltv2:
-        st.metric("LTV Mediana", f"${clientes_filt['lifetime_value'].median():,.0f}")
+        st.metric("LTV Mediana", f"${fn0(clientes_filt['lifetime_value'].median())}")
     with col_ltv3:
-        st.metric("LTV Máximo", f"${clientes_filt['lifetime_value'].max():,.0f}")
+        st.metric("LTV Máximo", f"${fn0(clientes_filt['lifetime_value'].max())}")
     
     fig_ltv_dist = px.histogram(
         clientes_filt,
@@ -1064,7 +1071,7 @@ with tab_clientes:
     )
     fig_ltv_dist.update_traces(hovertemplate='LTV: $%{x:,.0f}<br>Clientes: %{y:,}<extra></extra>')
     fig_ltv_dist.update_layout(height=400, showlegend=False)
-    st.plotly_chart(fig_ltv_dist, width="stretch")
+    grafico(fig_ltv_dist, width="stretch")
     
     if filtros.get('mostrar_ml') and len(datos_filtrados) > 100:
         crear_seccion_titulo("Segmentación Inteligente de Clientes (K-Means)")
@@ -1140,7 +1147,7 @@ with tab_clientes:
                     marker=dict(size=5, opacity=0.7)
                 )
                 
-                st.plotly_chart(fig_clusters, width="stretch")
+                grafico(fig_clusters, width="stretch")
                 
                 col_cluster = st.columns(4)
                 cluster_counts = {}
@@ -1151,8 +1158,8 @@ with tab_clientes:
                         pct_cluster = (count_cluster / len(rfm_data) * 100)
                         st.metric(
                             f"🎯 {nombre}",
-                            f"{count_cluster:,}",
-                            delta=f"{pct_cluster:.1f}%"
+                            f"{fni(count_cluster)}",
+                            delta=f"{fn1(pct_cluster)}%"
                         )
                 
                 # Calcular promedios por cluster para insights
@@ -1215,10 +1222,10 @@ with tab_clientes:
                 
                 # Recomendaciones específicas por cluster
                 recomendaciones_clustering = [
-                    f"<strong>Premium ({cluster_counts['Premium']:,} clientes):</strong> Programa VIP exclusivo, acceso anticipado a nuevos productos, atención personalizada",
-                    f"<strong>Activos ({cluster_counts['Activo']:,} clientes):</strong> Ofertas de up-selling/cross-selling, programa de referidos, incentivos por mayor gasto",
-                    f"<strong>En Riesgo ({cluster_counts['En Riesgo']:,} clientes):</strong> Campañas de win-back con descuentos especiales, encuestas de satisfacción, emails personalizados",
-                    f"<strong>Inactivos ({cluster_counts['Inactivo']:,} clientes):</strong> Campañas de reactivación masiva, ofertas agresivas de reenganche, limpiar base de datos si el costo es muy alto"
+                    f"<strong>Premium ({fni(cluster_counts['Premium'])} clientes):</strong> Programa VIP exclusivo, acceso anticipado a nuevos productos, atención personalizada",
+                    f"<strong>Activos ({fni(cluster_counts['Activo'])} clientes):</strong> Ofertas de up-selling/cross-selling, programa de referidos, incentivos por mayor gasto",
+                    f"<strong>En Riesgo ({fni(cluster_counts['En Riesgo'])} clientes):</strong> Campañas de win-back con descuentos especiales, encuestas de satisfacción, emails personalizados",
+                    f"<strong>Inactivos ({fni(cluster_counts['Inactivo'])} clientes):</strong> Campañas de reactivación masiva, ofertas agresivas de reenganche, limpiar base de datos si el costo es muy alto"
                 ]
                 
                 crear_recomendaciones("Estrategias por Segmento de Clientes", recomendaciones_clustering)
@@ -1256,7 +1263,7 @@ with tab_clientes:
             xaxis_title="Probabilidad de Abandono",
             yaxis_title="Cantidad de Clientes"
         )
-        st.plotly_chart(fig_churn, width="stretch")
+        grafico(fig_churn, width="stretch")
     
     with col_churn2:
         churn_alto = len(clientes_filt[clientes_filt['churn_probability'] > 0.7])
@@ -1281,7 +1288,7 @@ with tab_clientes:
             textinfo='percent+label'
         )
         fig_churn_pie.update_layout(height=400)
-        st.plotly_chart(fig_churn_pie, width="stretch")
+        grafico(fig_churn_pie, width="stretch")
     
     # Insights accionables
     total_clientes_analisis = len(clientes_filt)
@@ -1290,18 +1297,18 @@ with tab_clientes:
     
     crear_insight(
         "Hallazgo Clave",
-        f"De {total_clientes_analisis:,} clientes analizados, {churn_alto:,} ({porcentaje_alto:.1f}%) tienen riesgo ALTO de abandono "
-        f"y {churn_medio:,} ({porcentaje_medio:.1f}%) tienen riesgo MEDIO. Estos {churn_alto + churn_medio:,} clientes requieren "
+        f"De {fni(total_clientes_analisis)} clientes analizados, {fni(churn_alto)} ({fn1(porcentaje_alto)}%) tienen riesgo ALTO de abandono "
+        f"y {fni(churn_medio)} ({fn1(porcentaje_medio)}%) tienen riesgo MEDIO. Estos {fni(churn_alto + churn_medio)} clientes requieren "
         "atención inmediata para evitar pérdida de ingresos."
     )
     
     # Recomendaciones específicas
     recomendaciones_churn = [
-        f"<strong>Prioridad Crítica:</strong> Contactar a los {churn_alto:,} clientes de riesgo ALTO con ofertas personalizadas o descuentos exclusivos",
+        f"<strong>Prioridad Crítica:</strong> Contactar a los {fni(churn_alto)} clientes de riesgo ALTO con ofertas personalizadas o descuentos exclusivos",
         "<strong>Programas de Fidelización:</strong> Implementar un programa de puntos o beneficios para clientes de riesgo MEDIO",
         "<strong>Email Marketing:</strong> Enviar campañas de reactivación con productos relevantes basados en su historial de compras",
         "<strong>Encuestas de Satisfacción:</strong> Contactar clientes en riesgo para identificar problemas y oportunidades de mejora",
-        f"<strong>Análisis de Valor:</strong> Calcular el LTV de los {churn_alto:,} clientes en riesgo para priorizar esfuerzos de retención"
+        f"<strong>Análisis de Valor:</strong> Calcular el LTV de los {fni(churn_alto)} clientes en riesgo para priorizar esfuerzos de retención"
     ]
     
     crear_recomendaciones("Acciones Recomendadas para Reducir Churn", recomendaciones_churn)
@@ -1334,7 +1341,7 @@ with tab_canal:
             textinfo='percent+label'
         )
         fig_dispositivos.update_layout(height=400)
-        st.plotly_chart(fig_dispositivos, width="stretch")
+        grafico(fig_dispositivos, width="stretch")
     
     with col2:
         st.subheader("Fuentes de Tráfico")
@@ -1351,7 +1358,7 @@ with tab_canal:
         )
         fig_trafico.update_traces(hovertemplate='<b>%{x}</b><br>Ingresos: $%{y:,.0f}<extra></extra>')
         fig_trafico.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_trafico, width="stretch")
+        grafico(fig_trafico, width="stretch")
     
     st.subheader("Métodos de Pago")
     
@@ -1382,7 +1389,7 @@ with tab_canal:
         yaxis_title="Ingresos (USD)",
         xaxis_title="Método de Pago"
     )
-    st.plotly_chart(fig_pagos, width="stretch")
+    grafico(fig_pagos, width="stretch")
     
     st.subheader("Flujo de Conversión (Diagrama Sankey)")
     
@@ -1431,7 +1438,7 @@ with tab_canal:
             height=500,
             font=dict(size=11)
         )
-        st.plotly_chart(fig_sankey, width="stretch")
+        grafico(fig_sankey, width="stretch")
     except Exception as e:
         st.warning(f"No se pudo generar diagrama Sankey: {str(e)}")
 
@@ -1475,19 +1482,19 @@ with tab_ml:
                         color_discrete_map={True: '#EF4444', False: '#10B981'}
                     )
                     fig_anomalias.update_layout(height=500)
-                    st.plotly_chart(fig_anomalias, width="stretch")
+                    grafico(fig_anomalias, width="stretch")
                 
                 with col2:
                     num_anomalias = datos_anomalias['es_anomalia'].sum()
-                    st.metric("Transacciones Anómalas Detectadas", f"{num_anomalias:,}")
-                    st.metric("% del Total", f"{(num_anomalias/len(datos_anomalias)*100):.2f}%")
+                    st.metric("Transacciones Anómalas Detectadas", f"{fni(num_anomalias)}")
+                    st.metric("% del Total", f"{fn2((num_anomalias/len(datos_anomalias)*100))}%")
                     
                     if num_anomalias > 0:
                         st.markdown("**Características de Anomalías:**")
                         anomalas_df = datos_anomalias[datos_anomalias['es_anomalia']]
-                        st.write(f"- Monto promedio: ${anomalas_df['total_amount_usd'].mean():,.0f}")
-                        st.write(f"- Cantidad promedio: {anomalas_df['quantity'].mean():.0f}")
-                        st.write(f"- Beneficio promedio: ${anomalas_df['profit'].mean():,.0f}")
+                        st.write(f"- Monto promedio: ${fn0(anomalas_df['total_amount_usd'].mean())}")
+                        st.write(f"- Cantidad promedio: {fn0(anomalas_df['quantity'].mean())}")
+                        st.write(f"- Beneficio promedio: ${fn0(anomalas_df['profit'].mean())}")
         except Exception as e:
             st.error(f"Error en detección de anomalías: {str(e)}")
         
@@ -1523,7 +1530,7 @@ with tab_ml:
             )
             fig_corr.update_layout(height=500)
             fig_corr.update_traces(hovertemplate='<b>%{x}</b> vs <b>%{y}</b><br>Correlación: %{z:.2f}<extra></extra>')
-            st.plotly_chart(fig_corr, width="stretch")
+            grafico(fig_corr, width="stretch")
         except Exception as e:
             st.warning(f"No se pudo generar matriz de correlación: {str(e)}")
         
@@ -1546,7 +1553,7 @@ with tab_ml:
             )
             fig_recomendaciones.update_traces(hovertemplate='<b>%{y}</b><br>Compras: %{x:,}<extra></extra>')
             fig_recomendaciones.update_layout(height=500, yaxis={'categoryorder': 'total ascending'})
-            st.plotly_chart(fig_recomendaciones, width="stretch")
+            grafico(fig_recomendaciones, width="stretch")
         except Exception as e:
             st.warning(f"No se pudo generar análisis de recomendaciones: {str(e)}")
 
@@ -1566,17 +1573,22 @@ with tab_finanzas:
     total_beneficio = datos_filtrados['profit'].sum()
     costo_total = total_ingresos - total_beneficio
     margen_beneficio = (total_beneficio / total_ingresos * 100) if total_ingresos > 0 else 0
+    ingresos_ant = datos_anteriores['total_amount_usd'].sum()
+    beneficio_ant = datos_anteriores['profit'].sum()
+    margen_ant = (beneficio_ant / ingresos_ant * 100) if ingresos_ant > 0 else None
     
     col_pl1, col_pl2, col_pl3, col_pl4 = st.columns(4)
     
     with col_pl1:
-        st.metric("Ingresos Totales", f"${total_ingresos:,.0f}", delta="+12.5%")
+        st.metric("Ingresos Totales", f"${fn0(total_ingresos)}", delta=variacion(total_ingresos, ingresos_ant))
     with col_pl2:
-        st.metric("Costos Totales", f"${costo_total:,.0f}", delta="-2.3%", delta_color="inverse")
+        st.metric("Costos Totales", f"${fn0(costo_total)}", delta=variacion(costo_total, ingresos_ant - beneficio_ant),
+                  delta_color="inverse")
     with col_pl3:
-        st.metric("Beneficio Neto", f"${total_beneficio:,.0f}", delta="+18.2%")
+        st.metric("Beneficio Neto", f"${fn0(total_beneficio)}", delta=variacion(total_beneficio, beneficio_ant))
     with col_pl4:
-        st.metric("Margen de Beneficio", f"{margen_beneficio:.2f}%", delta="+1.5%")
+        st.metric("Margen de Beneficio", f"{fn2(margen_beneficio)}%",
+                  delta=f"{fsn1(margen_beneficio - margen_ant)} p. p." if margen_ant is not None else None)
     
     st.subheader("Análisis Waterfall Financiero (P&L)")
     
@@ -1594,7 +1606,7 @@ with tab_finanzas:
             measure=["absolute", "relative", "total"],
             x=['Ingresos Brutos', 'Costos Operativos', 'Beneficio Neto'],
             y=[total_ingresos, -costo_total, 0],  # El total se calcula automáticamente
-            text=[f"${total_ingresos:,.0f}", f"-${costo_total:,.0f}", f"${total_beneficio:,.0f}"],
+            text=[f"${fn0(total_ingresos)}", f"-${fn0(costo_total)}", f"${fn0(total_beneficio)}"],
             textposition="outside",
             connector={"line": {"color": "rgb(100, 100, 100)", "width": 2}},
             decreasing={"marker": {"color": "#EF4444"}},
@@ -1610,7 +1622,7 @@ with tab_finanzas:
             xaxis_title="",
             margin=dict(t=100, b=50)
         )
-        st.plotly_chart(fig_waterfall, width="stretch")
+        grafico(fig_waterfall, width="stretch")
     except Exception as e:
         st.warning(f"No se pudo generar waterfall: {str(e)}")
     
@@ -1635,7 +1647,7 @@ with tab_finanzas:
         )
         fig_margenes.update_traces(hovertemplate='<b>%{x}</b><br>Margen: %{y:.1f}%<extra></extra>')
         fig_margenes.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_margenes, width="stretch")
+        grafico(fig_margenes, width="stretch")
     
     with col_fin2:
         st.subheader("Evolución del Beneficio Mensual")
@@ -1721,7 +1733,7 @@ with tab_finanzas:
                 x=1
             )
         )
-        st.plotly_chart(fig_beneficio, width="stretch")
+        grafico(fig_beneficio, width="stretch")
     
     st.subheader("Métricas Financieras Avanzadas")
     
@@ -1734,14 +1746,14 @@ with tab_finanzas:
     roas = total_ingresos / costo_total if costo_total > 0 else 0
     
     with col_metricas[0]:
-        st.metric("CAC (Costo Adquisición)", f"${cac:,.0f}")
+        st.metric("CAC (Costo Adquisición)", f"${fn0(cac)}")
     with col_metricas[1]:
-        st.metric("LTV/CAC Ratio", f"{ltv_cac_ratio:.2f}x")
+        st.metric("LTV/CAC Ratio", f"{fn2(ltv_cac_ratio)}x")
     with col_metricas[2]:
-        st.metric("ROAS", f"{roas:.2f}x")
+        st.metric("ROAS", f"{fn2(roas)}x")
     with col_metricas[3]:
         aov = datos_filtrados['total_amount_usd'].mean()
-        st.metric("AOV (Valor Promedio)", f"${aov:,.0f}")
+        st.metric("AOV (Valor Promedio)", f"${fn0(aov)}")
 
 with tab_operacional:
     crear_descripcion_seccion(
@@ -1758,18 +1770,22 @@ with tab_operacional:
     total_pedidos = datos_filtrados['transaction_id'].nunique()
     total_unidades = datos_filtrados['quantity'].sum()
     promedio_unidades_pedido = datos_filtrados.groupby('transaction_id')['quantity'].sum().mean()
-    tasa_conversion = (total_pedidos / len(datos_filtrados) * 100) if len(datos_filtrados) > 0 else 0
+    ticket_medio = datos_filtrados['total_amount_usd'].sum() / total_pedidos if total_pedidos else 0
+    pedidos_ant = datos_anteriores['transaction_id'].nunique()
+    unidades_ant = datos_anteriores['quantity'].sum()
+    unidades_pedido_ant = datos_anteriores.groupby('transaction_id')['quantity'].sum().mean() if pedidos_ant else 0
+    ticket_ant = datos_anteriores['total_amount_usd'].sum() / pedidos_ant if pedidos_ant else 0
     
     col_op1, col_op2, col_op3, col_op4 = st.columns(4)
     
     with col_op1:
-        st.metric("Total Pedidos", f"{total_pedidos:,}", delta="+8.5%")
+        st.metric("Total Pedidos", f"{fni(total_pedidos)}", delta=variacion(total_pedidos, pedidos_ant))
     with col_op2:
-        st.metric("Unidades Vendidas", f"{total_unidades:,.0f}", delta="+15.3%")
+        st.metric("Unidades Vendidas", f"{fn0(total_unidades)}", delta=variacion(total_unidades, unidades_ant))
     with col_op3:
-        st.metric("Unidades/Pedido", f"{promedio_unidades_pedido:.1f}", delta="+2.1%")
+        st.metric("Unidades/Pedido", f"{fn1(promedio_unidades_pedido)}", delta=variacion(promedio_unidades_pedido, unidades_pedido_ant))
     with col_op4:
-        st.metric("Tasa de Conversión", f"{tasa_conversion:.2f}%", delta="+1.8%")
+        st.metric("Ticket Medio", f"${fn2(ticket_medio)}", delta=variacion(ticket_medio, ticket_ant))
     
     col_op_viz1, col_op_viz2 = st.columns(2)
     
@@ -1800,7 +1816,7 @@ with tab_operacional:
             showlegend=False,
             xaxis_title="Día de la Semana"
         )
-        st.plotly_chart(fig_dias_op, width="stretch")
+        grafico(fig_dias_op, width="stretch")
     
     with col_op_viz2:
         st.subheader("Distribución de Cantidad por Pedido")
@@ -1815,7 +1831,7 @@ with tab_operacional:
         )
         fig_cantidad.update_traces(hovertemplate='Unidades: %{x:,.0f}<br>Pedidos: %{y:,}<extra></extra>')
         fig_cantidad.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig_cantidad, width="stretch")
+        grafico(fig_cantidad, width="stretch")
     
     st.subheader("⏱️ Análisis de Velocidad de Ventas")
     
@@ -1855,7 +1871,7 @@ with tab_operacional:
     fig_velocidad.update_yaxes(title_text="Unidades", secondary_y=True)
     fig_velocidad.update_layout(height=400, title='Velocidad de Ventas Diaria')
     
-    st.plotly_chart(fig_velocidad, width="stretch")
+    grafico(fig_velocidad, width="stretch")
     
     st.subheader("🏆 Top Productos por Rotación")
     
@@ -1884,6 +1900,6 @@ with tab_operacional:
     )
     fig_rotacion.update_traces(hovertemplate='<b>%{y}</b><br>Categoría: %{customdata[0]}<br>Velocidad: %{x:,.0f}<br>Unidades: %{customdata[1]:,.0f}<extra></extra>')
     fig_rotacion.update_layout(height=500, yaxis={'categoryorder': 'total ascending'})
-    st.plotly_chart(fig_rotacion, width="stretch")
+    grafico(fig_rotacion, width="stretch")
 
 crear_pie_pagina()
