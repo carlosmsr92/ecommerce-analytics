@@ -3,6 +3,8 @@ Componentes UI Reutilizables para Dashboard
 Autor: cmsr92
 """
 
+import re
+
 import streamlit as st
 import plotly.graph_objects as go
 from datetime import datetime
@@ -449,12 +451,17 @@ def crear_descripcion_seccion(titulo, descripcion):
     </div>
     """, unsafe_allow_html=True)
 
+def _negritas(texto):
+    """Dentro de un bloque HTML Streamlit no interpreta markdown: **texto** se convierte a <strong> a mano."""
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", str(texto))
+
 def crear_insight(titulo, contenido):
     """Crea un cuadro de insight accionable"""
+    cabecera = f"<h5>💡 {titulo}</h5>" if titulo else ""
     st.markdown(f"""
     <div class="insight-box">
-        <h5>💡 {titulo}</h5>
-        <p>{contenido}</p>
+        {cabecera}
+        <p>{_negritas(contenido)}</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -466,7 +473,7 @@ def crear_recomendaciones(titulo, recomendaciones):
         titulo: Título del cuadro de recomendaciones
         recomendaciones: Lista de strings con las recomendaciones
     """
-    items_html = "".join([f"<li>{rec}</li>" for rec in recomendaciones])
+    items_html = "".join([f"<li>{_negritas(rec)}</li>" for rec in recomendaciones])
     st.markdown(f"""
     <div class="recomendacion-box">
         <h5>🎯 {titulo}</h5>

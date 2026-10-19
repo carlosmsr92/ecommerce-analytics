@@ -7,9 +7,11 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 
-def obtener_rango_fecha_preset(preset):
-    """Convierte preset de periodo a rango de fechas"""
-    fecha_fin = datetime.now()
+def obtener_rango_fecha_preset(preset, fecha_fin):
+    """Convierte preset de periodo a rango de fechas que termina en fecha_fin (la última fecha con datos).
+
+    Se ancla al final del histórico y no a hoy: si no, «Últimos 90 días» queda vacío en cuanto los datos se quedan atrás.
+    """
     
     mapeo = {
         'Últimos 7 Días': 7,
@@ -46,7 +48,7 @@ def crear_filtros_sidebar(transacciones_df):
         
         # Fechas límite del histórico
         fecha_min_historico = datetime(2015, 10, 29)
-        fecha_max_historico = datetime(2025, 10, 26)
+        fecha_max_historico = datetime.combine(pd.Timestamp(transacciones_df['date'].max()).date(), datetime.max.time())
         
         if tipo_periodo == 'Personalizado':
             # Calendarios desplegables para selección personalizada
@@ -91,7 +93,7 @@ def crear_filtros_sidebar(transacciones_df):
                     fecha_fin = fecha_max_historico
         else:
             # Usar presets
-            fecha_inicio, fecha_fin = obtener_rango_fecha_preset(tipo_periodo)
+            fecha_inicio, fecha_fin = obtener_rango_fecha_preset(tipo_periodo, fecha_max_historico)
         
         filtros['fecha_inicio'] = fecha_inicio
         filtros['fecha_fin'] = fecha_fin
