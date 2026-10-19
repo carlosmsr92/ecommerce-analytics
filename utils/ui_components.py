@@ -447,7 +447,7 @@ def crear_descripcion_seccion(titulo, descripcion):
     st.markdown(f"""
     <div class="descripcion-seccion">
         <h4>📋 {titulo}</h4>
-        <p>{descripcion}</p>
+        <p>{_negritas(descripcion)}</p>
     </div>
     """, unsafe_allow_html=True)
 

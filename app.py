@@ -35,7 +35,7 @@ st.set_page_config(
     page_title="Analytics Ecommerce Global | cmsr92",
     page_icon="📊",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"  # desplegado en PC, plegado en móvil (si no, tapa la pantalla)
 )
 
 from utils.ui_components import (
