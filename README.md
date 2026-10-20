@@ -45,8 +45,10 @@ ecommerce-analytics/
 │   ├── filtros.py                 # Sistema de filtros
 │   ├── traducciones.py            # Internacionalización
 │   ├── ui_components.py           # Componentes UI
-│   ├── export_utils.py            # Exportación de informes
-│   └── visualizaciones_avanzadas.py
+│   ├── export_utils.py            # Exportación de informes (API)
+│   ├── formato.py                 # Números en formato español
+│   ├── marca.py                   # Cabecera, pie e icono comunes CMSR92
+│   └── assets/                    # Logo y símbolo de marca
 │
 └── .streamlit/
     └── config.toml                # Configuración Streamlit
@@ -66,7 +68,7 @@ ecommerce-analytics/
 | 📦 **Análisis de Productos** | BCG Matrix, categorías top, subcategorías |
 | 👥 **Segmentación de Clientes** | RFM, K-Means clustering, análisis de cohortes |
 | 📱 **Análisis de Canal** | Diagramas Sankey, conversión por dispositivo |
-| 🤖 **ML & IA Insights** | Isolation Forest, anomalías, correlaciones |
+| 🤖 **Machine Learning e IA** | Isolation Forest, anomalías, correlaciones |
 | 💰 **Análisis Financiero** | P&L waterfall, márgenes, rentabilidad |
 | ⚙️ **Métricas Operacionales** | Logística, cumplimiento, satisfacción |
 
@@ -143,8 +145,4 @@ Este es un proyecto personal de **CMSR92**. Si encuentras bugs o tienes sugerenc
 
 ## 👤 Autor
 
-**Carlos Manuel Suárez Rivero (CMSR92)**  
-[LinkedIn](https://www.linkedin.com/in/cmsr92) · [Portfolio](https://carlosmsr92.github.io/cmsr92/)
-
----
-**Desarrollado con ❤️ para la comunidad de Data Science y Business Intelligence**
+**Carlos Manuel Suárez Rivero (CMSR92)** · [LinkedIn](https://www.linkedin.com/in/cmsr92) · [Portfolio](https://carlosmsr92.github.io/cmsr92/)

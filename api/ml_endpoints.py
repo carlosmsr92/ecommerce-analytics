@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from typing import Optional, List
+from typing import List
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -85,7 +85,7 @@ def create_forecast(
         forecast = model.predict(future)
         
         # Calcular métricas
-        from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+        from sklearn.metrics import mean_squared_error, r2_score
         
         y_true = df['y'].values
         y_pred = forecast.iloc[:len(df)]['yhat'].values

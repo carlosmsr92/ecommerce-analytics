@@ -1,17 +1,12 @@
 import pandas as pd
 import io
 from datetime import datetime
-from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak, Image
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
-from reportlab.pdfgen import canvas
-import plotly.graph_objects as go
-import plotly.io as pio
-import tempfile
-import os
+from reportlab.lib.enums import TA_CENTER
 
 def create_pdf_report(transactions_df, customers_df, products_df, filters):
     """

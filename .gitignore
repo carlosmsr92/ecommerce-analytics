@@ -11,24 +11,9 @@ __pycache__/
 env/
 venv/
 
-# Replit specific
-.replit
-.config/
-.cache/
-.upm/
-replit.nix
-
-# Development files
-pyproject.toml
-uv.lock
-.breakpoints
-
 # Logs
 *.log
 /tmp/
-
-# Temporary assets
-attached_assets/
 
 # IDE
 .vscode/

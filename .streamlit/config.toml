@@ -1,8 +1,25 @@
 [server]
 headless = true
 address = "0.0.0.0"
-##port = 5000
 
 [client]
 # Sin botón Deploy ni menú de desarrollador para quien visita la app
 toolbarMode = "minimal"
+
+# Marco común CMSR92 de los dashboards del portfolio: turquesa de marca como color principal (#087F93 en claro,
+# 4,7:1 sobre blanco; #0CA5BE en oscuro) y la letra Inter de la landing. Fondo oscuro pizarra propio del dashboard.
+# Las secciones [theme.light] y [theme.dark] (Streamlit >= 1.51) mantienen los dos temas; cada viewer ve el de su sistema.
+[theme]
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap, sans-serif"
+
+[theme.light]
+primaryColor = "#087F93"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F1F5F9"
+textColor = "#0F172A"
+
+[theme.dark]
+primaryColor = "#0CA5BE"
+backgroundColor = "#0F172A"
+secondaryBackgroundColor = "#1E293B"
+textColor = "#F1F5F9"

@@ -1,10 +1,8 @@
 # Dashboard Streamlit (lo que instala Streamlit Community Cloud).
 # La API y la base de datos opcionales tienen sus dependencias en requirements-api.txt.
-streamlit>=1.50,<2      # width="stretch" en gráficos, tablas y botones
+streamlit>=1.51,<2      # width="stretch" requiere 1.50; [theme.light]/[theme.dark] en config.toml, 1.51
 pandas>=2.1
 numpy>=1.24
 pyarrow>=14
 plotly>=5.17
-folium>=0.15
-streamlit-folium>=0.15
 scikit-learn>=1.3

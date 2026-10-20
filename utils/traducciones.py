@@ -223,7 +223,7 @@ MESES_TRADUCCION = {
     'Feb': 'Feb',
     'Mar': 'Mar',
     'Apr': 'Abr',
-    'May': 'May',
+    # 'May' es a la vez nombre y abreviatura: ya está arriba
     'Jun': 'Jun',
     'Jul': 'Jul',
     'Aug': 'Ago',
