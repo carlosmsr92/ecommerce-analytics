@@ -24,7 +24,10 @@ hide_streamlit_style = """
     .viewerBadge_text__1JaDK,
     #GithubIcon {display: none;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+    /* La cabecera queda transparente pero visible: dentro está el botón que vuelve a
+       abrir el panel de filtros cuando se pliega (los menús los quita toolbarMode = "minimal") */
+    header[data-testid="stHeader"] {background: transparent;}
+    [data-testid="stDecoration"], [data-testid="stAppDeployButton"] {display: none;}
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
