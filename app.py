@@ -93,9 +93,8 @@ tab_overview, tab_geografia, tab_rendimiento, tab_productos, tab_clientes, tab_c
 with tab_overview:
     crear_descripcion_seccion(
         "Resumen Ejecutivo",
-        "Esta sección presenta una visión general del rendimiento del negocio. Los KPIs principales muestran la salud financiera, "
-        "el volumen de operaciones y la eficiencia comercial. Utiliza los filtros del panel lateral para analizar períodos específicos, "
-        "regiones geográficas o segmentos de clientes."
+        "Un vistazo rápido a cómo va el negocio: cuánto se vende, cuánto se gana y cuántos clientes compran. "
+        "Con los filtros del panel lateral puedes centrarte en un periodo, una región o un tipo de cliente."
     )
 
     crear_seccion_titulo("Indicadores Clave de Rendimiento (KPIs)")
@@ -115,9 +114,9 @@ with tab_overview:
 
         **📦 Productos Vendidos:** Cantidad de productos distintos que se vendieron en el período.
 
-        **🎯 Tasa de Conversión:** Porcentaje de clientes únicos respecto al total de pedidos. Una tasa cercana a 100% indica que cada pedido corresponde a un cliente diferente (baja repetición).
+        **🎯 Clientes por pedido:** Clientes distintos dividido entre pedidos. Cerca del 100 % significa que casi nadie repite; cuanto más bajo, más compras repetidas.
 
-        **📊 Items por Pedido:** Promedio de artículos incluidos en cada transacción. Útil para estrategias de bundling y cross-selling.
+        **📊 Artículos por pedido:** Media de artículos en cada compra. Sirve para ver si funcionan los packs y las recomendaciones de productos complementarios.
         """)
 
     ingresos_totales = datos_filtrados['total_amount_usd'].sum()
@@ -190,14 +189,14 @@ with tab_overview:
     with col7:
         tasa_conversion = (clientes_unicos / pedidos_totales * 100) if pedidos_totales > 0 else 0
         st.metric(
-            label="🎯 Tasa de Conversión",
+            label="🎯 Clientes por pedido",
             value=f"{fn1(tasa_conversion)}%"
         )
 
     with col8:
         items_promedio = datos_filtrados['quantity'].mean()
         st.metric(
-            label="📊 Items por Pedido",
+            label="📊 Artículos por pedido",
             value=f"{fn1(items_promedio)}"
         )
 
@@ -235,48 +234,47 @@ with tab_overview:
         # Insight 1: Rendimiento general
         if cambio_ingresos > 10:
             insights_ejecutivos.append(
-                f"📈 **Crecimiento Acelerado:** Los ingresos han crecido un {fn1(cambio_ingresos)}% comparado con el período anterior, "
-                f"superando ${fn0(ingresos_totales)}. Este momentum positivo indica una fuerte demanda y efectividad en las estrategias comerciales."
+                f"📈 **Los ingresos suben:** {fn1(cambio_ingresos)}% más que en el periodo anterior, hasta ${fn0(ingresos_totales)}. "
+                f"La demanda va bien; merece la pena ver qué lo está impulsando."
             )
         elif cambio_ingresos < -10:
             insights_ejecutivos.append(
-                f"📊 **Análisis de Variación:** Los ingresos muestran una variación de {fsn1(cambio_ingresos)}% comparado con el período anterior, "
-                f"totalizando ${fn0(ingresos_totales)}. Consulta el tab 'Rendimiento & Análisis Temporal' para análisis detallado de tendencias."
+                f"📉 **Los ingresos bajan:** {fsn1(cambio_ingresos)}% respecto al periodo anterior, hasta ${fn0(ingresos_totales)}. "
+                f"En la pestaña «Rendimiento & Análisis Temporal» puedes ver cuándo empezó la caída."
             )
         else:
             insights_ejecutivos.append(
-                f"📊 **Estabilidad Controlada:** Los ingresos se mantienen estables con una variación de {fsn1(cambio_ingresos)}% respecto al período anterior, "
-                f"totalizando ${fn0(ingresos_totales)}. Existen oportunidades de optimización para impulsar el crecimiento."
+                f"📊 **Ingresos estables:** {fsn1(cambio_ingresos)}% respecto al periodo anterior, con ${fn0(ingresos_totales)} en total."
             )
 
         # Insight 2: Concentración geográfica
         if porcentaje_top_pais > 50:
             insights_ejecutivos.append(
-                f"🌍 **Concentración de Mercado:** {top_pais} representa el {fn1(porcentaje_top_pais)}% de los ingresos totales "
-                f"(${fn0(ingresos_top_pais)}). Esta alta dependencia presenta riesgo. Se recomienda diversificar geográficamente."
+                f"🌍 **Mucho peso de un solo país:** {top_pais} aporta el {fn1(porcentaje_top_pais)}% de los ingresos "
+                f"(${fn0(ingresos_top_pais)}). Si ese mercado flojea, se nota en todo el negocio: conviene crecer en otros."
             )
         else:
             insights_ejecutivos.append(
-                f"🌍 **Diversificación Saludable:** {top_pais} lidera con {fn1(porcentaje_top_pais)}% de ingresos, pero existe buena "
-                f"distribución geográfica, reduciendo el riesgo de dependencia de un solo mercado."
+                f"🌍 **Ventas bien repartidas:** {top_pais} va en cabeza con el {fn1(porcentaje_top_pais)}% de los ingresos, "
+                f"pero el negocio no depende de un solo país."
             )
 
         # Insight 3: Producto estrella
         insights_ejecutivos.append(
-            f"⭐ **Categoría Líder:** {top_categoria} domina el portafolio con {fn1(porcentaje_top_categoria)}% de los ingresos "
-            f"(${fn0(ingresos_top_categoria)}). Reforzar inventario y marketing en esta categoría puede maximizar resultados."
+            f"⭐ **Categoría que más vende:** {top_categoria}, con el {fn1(porcentaje_top_categoria)}% de los ingresos "
+            f"(${fn0(ingresos_top_categoria)}). Conviene no quedarse sin stock en ella."
         )
 
         # Insight 4: Eficiencia operativa
         if ticket_promedio > 100:
             insights_ejecutivos.append(
-                f"💎 **Alto Valor por Transacción:** El ticket promedio de ${fn0(ticket_promedio)} indica clientes de alto valor. "
-                f"Enfocar estrategias de retención y programas VIP puede aumentar la rentabilidad."
+                f"💎 **Pedidos de importe alto:** el ticket medio es de ${fn0(ticket_promedio)}. "
+                f"Merece la pena cuidar a estos clientes para que repitan."
             )
         else:
             insights_ejecutivos.append(
-                f"🎯 **Oportunidad de Upselling:** Con un ticket promedio de ${fn0(ticket_promedio)}, existe potencial para incrementar "
-                f"el valor por pedido mediante bundling, recomendaciones personalizadas y ofertas complementarias."
+                f"🎯 **Margen para subir el ticket:** el ticket medio es de ${fn0(ticket_promedio)}. "
+                f"Packs y recomendaciones de productos complementarios podrían subirlo."
             )
 
     # Mostrar insights
@@ -285,11 +283,11 @@ with tab_overview:
 
     # Recomendaciones accionables
     recomendaciones_ejecutivas = [
-        "🔍 **Análisis Geográfico:** Explorar la pestaña 'Análisis Geográfico' para identificar mercados emergentes con alto potencial de crecimiento",
-        "📈 **Rendimiento Temporal:** Revisar 'Rendimiento & Análisis Temporal' para analizar tendencias, momentum e indicadores de crecimiento que guíen la planificación estratégica",
-        "👥 **Segmentación:** Analizar 'Segmentación de Clientes' para identificar clientes Champions y en riesgo de churn, personalizando estrategias",
-        "🤖 **Machine Learning:** Activa análisis ML en el panel lateral para detectar anomalías, patrones ocultos y oportunidades de optimización automática",
-        "💰 **Análisis Financiero:** Verificar márgenes y rentabilidad en 'Análisis Financiero' para asegurar la salud del negocio"
+        "🔍 **Países:** en «Análisis Geográfico», qué mercados crecen y cuáles podrían crecer más",
+        "📈 **Tendencias:** en «Rendimiento & Análisis Temporal», si las ventas suben o bajan y en qué épocas",
+        "👥 **Clientes:** en «Segmentación de Clientes», quiénes son los mejores y quiénes están a punto de dejar de comprar",
+        "🤖 **Machine Learning:** activa el análisis en el panel lateral para ver transacciones fuera de lo normal",
+        "💰 **Finanzas:** en «Análisis Financiero», márgenes y beneficio"
     ]
 
     crear_recomendaciones("🎯 Acciones Recomendadas", recomendaciones_ejecutivas)
@@ -421,9 +419,8 @@ with tab_overview:
 with tab_geografia:
     crear_descripcion_seccion(
         "Análisis de Distribución Geográfica",
-        "Visualiza cómo se distribuyen tus ventas alrededor del mundo. Identifica los mercados más rentables, "
-        "países con mayor potencial de crecimiento y oportunidades de expansión internacional. El mapa de calor "
-        "muestra la intensidad de ventas por país."
+        "Dónde se vende en el mundo. El color de cada país en el mapa indica cuánto se vende allí; "
+        "al lado tienes los países ordenados por ingresos."
     )
 
     crear_seccion_titulo("Análisis Geográfico Global")
@@ -562,9 +559,8 @@ with tab_geografia:
 with tab_rendimiento:
     crear_descripcion_seccion(
         "Análisis de Rendimiento y Tendencias Temporales",
-        "Analiza la evolución de tus ventas a lo largo del tiempo, identifica patrones de crecimiento y estacionalidad. "
-        "Compara períodos, detecta tendencias y toma decisiones basadas en el comportamiento histórico de tu negocio. "
-        "Los indicadores de crecimiento te ayudan a planificar estrategias, ajustar inventario y optimizar recursos."
+        "Cómo evolucionan las ventas con el tiempo: si crecen, si hay épocas fuertes y flojas, y qué días "
+        "y horas se vende más. Útil para planificar el stock y las campañas."
     )
 
     crear_seccion_titulo("Análisis Temporal de Rendimiento")
@@ -684,7 +680,7 @@ with tab_rendimiento:
             momentum = "Estable ➡️"
             momentum_color = "gray"
 
-        st.metric("Momentum", momentum)
+        st.metric("Tendencia", momentum)
 
     # Análisis de Tendencias con Promedio Móvil
     if len(serie_temporal) > 7:
@@ -814,9 +810,9 @@ with tab_rendimiento:
 with tab_productos:
     crear_descripcion_seccion(
         "Rendimiento y Estrategia de Productos",
-        "Analiza qué productos generan más ingresos, cuáles tienen mejor margen y cómo se distribuyen por categorías. "
-        "La Matriz BCG clasifica tus productos en: **Alto Rendimiento** (altos ingresos, alta frecuencia), **Consolidados** (altos ingresos, frecuencia media), "
-        "**Alto Potencial** (potencial de crecimiento) y **En Evaluación** (requieren optimización o descontinuación)."
+        "Qué productos venden más, cuáles dejan más margen y cómo se reparten por categorías. "
+        "La matriz BCG los separa en cuatro grupos: **Alto Rendimiento** (venden mucho y a menudo), **Consolidados** "
+        "(venden mucho, con menos frecuencia), **Alto Potencial** (podrían crecer) y **En Evaluación** (hay que decidir qué hacer con ellos)."
     )
 
     crear_seccion_titulo("Análisis de Productos")
@@ -998,10 +994,10 @@ with tab_productos:
 
 with tab_clientes:
     crear_descripcion_seccion(
-        "Conoce a Tus Clientes en Profundidad",
-        "Esta sección te permite entender quiénes son tus mejores clientes, cuáles están en riesgo de abandonar y cómo puedes "
-        "personalizar tu estrategia para cada segmento. El análisis RFM evalúa cuán recientemente compraron, con qué frecuencia "
-        "y cuánto gastan, clasificándolos en 11 segmentos desde Campeones hasta Perdidos."
+        "Quiénes son tus clientes",
+        "Quiénes son los mejores clientes, quiénes están a punto de dejar de comprar y qué hacer con cada grupo. "
+        "El análisis RFM mira cuándo compraron por última vez, cada cuánto compran y cuánto gastan, y los reparte "
+        "en 11 segmentos, de Campeones a Perdidos."
     )
 
     crear_seccion_titulo("Segmentación de Clientes")
@@ -1069,13 +1065,12 @@ with tab_clientes:
     grafico(fig_ltv_dist, width="stretch")
 
     if filtros.get('mostrar_ml') and len(datos_filtrados) > 100:
-        crear_seccion_titulo("Segmentación Inteligente de Clientes (K-Means)")
+        crear_seccion_titulo("Grupos de Clientes (K-Means)")
 
         crear_descripcion_seccion(
             "¿Qué es el Clustering K-Means?",
-            "El clustering K-Means es una técnica de machine learning que agrupa automáticamente a tus clientes en segmentos "
-            "con comportamientos similares. Analiza la Recencia (cuándo compraron por última vez), Frecuencia (cuántas veces compran) "
-            "y Valor Monetario (cuánto gastan). Esta segmentación permite personalizar estrategias de marketing y ventas para cada grupo."
+            "K-Means es un algoritmo que agrupa a los clientes que se parecen entre sí. Aquí se fija en tres cosas: "
+            "cuándo compraron por última vez, cada cuánto compran y cuánto gastan. Así se puede tratar a cada grupo de forma distinta."
         )
 
         try:
@@ -1217,10 +1212,10 @@ with tab_clientes:
 
                 # Recomendaciones específicas por cluster
                 recomendaciones_clustering = [
-                    f"<strong>Premium ({fni(cluster_counts['Premium'])} clientes):</strong> Programa VIP exclusivo, acceso anticipado a nuevos productos, atención personalizada",
-                    f"<strong>Activos ({fni(cluster_counts['Activo'])} clientes):</strong> Ofertas de up-selling/cross-selling, programa de referidos, incentivos por mayor gasto",
-                    f"<strong>En Riesgo ({fni(cluster_counts['En Riesgo'])} clientes):</strong> Campañas de win-back con descuentos especiales, encuestas de satisfacción, emails personalizados",
-                    f"<strong>Inactivos ({fni(cluster_counts['Inactivo'])} clientes):</strong> Campañas de reactivación masiva, ofertas agresivas de reenganche, limpiar base de datos si el costo es muy alto"
+                    f"<strong>Premium ({fni(cluster_counts['Premium'])} clientes):</strong> trato preferente, acceso anticipado a novedades y atención personal",
+                    f"<strong>Activos ({fni(cluster_counts['Activo'])} clientes):</strong> recomendar productos de más nivel o complementarios, y premiar que traigan a otros",
+                    f"<strong>En Riesgo ({fni(cluster_counts['En Riesgo'])} clientes):</strong> un descuento para que vuelvan y preguntarles qué ha fallado",
+                    f"<strong>Inactivos ({fni(cluster_counts['Inactivo'])} clientes):</strong> una campaña para intentar recuperarlos; si no responden, no insistir"
                 ]
 
                 crear_recomendaciones("Estrategias por Segmento de Clientes", recomendaciones_clustering)
@@ -1235,10 +1230,9 @@ with tab_clientes:
     crear_seccion_titulo("Análisis de Riesgo de Abandono (Churn)")
 
     crear_descripcion_seccion(
-        "¿Qué es el Riesgo de Churn?",
-        "El riesgo de churn (abandono) mide la probabilidad de que un cliente deje de comprar en tu negocio. "
-        "Este análisis identifica clientes en riesgo para permitir acciones preventivas. Un churn alto (>70%) indica "
-        "clientes que probablemente no volverán, medio (40-70%) requiere atención, y bajo (<40%) son clientes estables."
+        "¿Qué es el riesgo de abandono?",
+        "Es la probabilidad de que un cliente deje de comprar. Por encima del 70 %, probablemente no volverá; "
+        "entre el 40 % y el 70 %, conviene hacer algo; por debajo del 40 %, es un cliente estable."
     )
 
     col_churn1, col_churn2 = st.columns([6, 4])
@@ -1293,27 +1287,26 @@ with tab_clientes:
     crear_insight(
         "Hallazgo Clave",
         f"De {fni(total_clientes_analisis)} clientes analizados, {fni(churn_alto)} ({fn1(porcentaje_alto)}%) tienen riesgo ALTO de abandono "
-        f"y {fni(churn_medio)} ({fn1(porcentaje_medio)}%) tienen riesgo MEDIO. Estos {fni(churn_alto + churn_medio)} clientes requieren "
-        "atención inmediata para evitar pérdida de ingresos."
+        f"y {fni(churn_medio)} ({fn1(porcentaje_medio)}%) tienen riesgo MEDIO. Son {fni(churn_alto + churn_medio)} clientes "
+        "a los que conviene atender cuanto antes."
     )
 
     # Recomendaciones específicas
     recomendaciones_churn = [
-        f"<strong>Prioridad Crítica:</strong> Contactar a los {fni(churn_alto)} clientes de riesgo ALTO con ofertas personalizadas o descuentos exclusivos",
-        "<strong>Programas de Fidelización:</strong> Implementar un programa de puntos o beneficios para clientes de riesgo MEDIO",
-        "<strong>Email Marketing:</strong> Enviar campañas de reactivación con productos relevantes basados en su historial de compras",
-        "<strong>Encuestas de Satisfacción:</strong> Contactar clientes en riesgo para identificar problemas y oportunidades de mejora",
-        f"<strong>Análisis de Valor:</strong> Calcular el LTV de los {fni(churn_alto)} clientes en riesgo para priorizar esfuerzos de retención"
+        f"<strong>Primero:</strong> contactar a los {fni(churn_alto)} clientes de riesgo ALTO con una oferta pensada para ellos",
+        "<strong>Fidelizar:</strong> puntos o ventajas para los clientes de riesgo MEDIO",
+        "<strong>Email:</strong> recordarles productos parecidos a los que ya compraron",
+        "<strong>Preguntar:</strong> una encuesta breve para saber qué no les ha gustado",
+        f"<strong>Priorizar:</strong> calcular cuánto vale cada uno de los {fni(churn_alto)} clientes en riesgo y empezar por los que más aportan"
     ]
 
-    crear_recomendaciones("Acciones Recomendadas para Reducir Churn", recomendaciones_churn)
+    crear_recomendaciones("Qué hacer para que no se vayan", recomendaciones_churn)
 
 with tab_canal:
     crear_descripcion_seccion(
-        "Optimización de Canales de Venta",
-        "Descubre qué dispositivos (móvil, escritorio, tablet) generan más ventas, qué fuentes de tráfico son más rentables "
-        "(redes sociales, email, búsqueda orgánica, publicidad) y qué métodos de pago prefieren tus clientes. "
-        "Optimiza tu inversión en marketing según estos datos."
+        "Canales de venta",
+        "Desde qué dispositivos se compra, de dónde llegan los clientes (redes sociales, email, buscadores o publicidad) "
+        "y cómo prefieren pagar. Ayuda a decidir dónde invertir en marketing."
     )
 
     crear_seccion_titulo("Análisis de Canal")
@@ -1437,16 +1430,15 @@ with tab_canal:
 
 with tab_ml:
     crear_descripcion_seccion(
-        "Inteligencia Artificial para Decisiones Estratégicas",
-        "Esta sección combina múltiples modelos de machine learning para detectar patrones ocultos, anomalías en ventas y "
-        "oportunidades de optimización. Los algoritmos analizan millones de datos en segundos para proporcionarte insights "
-        "que serían imposibles de detectar manualmente."
+        "Lo que encuentran los modelos",
+        "Un modelo (Isolation Forest) marca las transacciones que se salen de lo normal, una matriz muestra qué variables "
+        "se mueven juntas y un ranking enseña los productos que más se compran, como base para recomendar."
     )
 
     crear_seccion_titulo("Machine Learning e IA")
 
     if not filtros.get('mostrar_ml'):
-        st.warning("⚠️ Activa 'Mostrar Análisis ML' en el panel lateral para visualizar insights avanzados de Machine Learning.")
+        st.warning("⚠️ Activa «Mostrar Análisis ML» en el panel lateral para ver esta pestaña.")
     else:
         st.subheader("🔍 Detección de Anomalías (Isolation Forest)")
 
@@ -1554,9 +1546,8 @@ with tab_ml:
 with tab_finanzas:
     crear_descripcion_seccion(
         "Salud Financiera del Negocio",
-        "Analiza en detalle la rentabilidad de tu negocio. El estado de Pérdidas y Ganancias (P&L) muestra la cascada de "
-        "costos desde ingresos brutos hasta beneficio neto. El gráfico waterfall visualiza cómo cada componente (costos, "
-        "impuestos, gastos) afecta tu margen final."
+        "Cuánto se gana de verdad. La cuenta de resultados va de los ingresos al beneficio, restando los costes, "
+        "y el gráfico de cascada lo enseña paso a paso."
     )
 
     crear_seccion_titulo("Análisis Financiero")
@@ -1588,8 +1579,7 @@ with tab_finanzas:
 
     st.markdown("""
     <p style='opacity: 0.85; font-size: 0.95rem; margin-bottom: 1.5rem;'>
-    El gráfico de cascada muestra cómo los ingresos brutos se transforman en beneficio neto después de descontar costos operativos.
-    Las barras verdes representan ingresos, las rojas costos y descuentos, y la barra azul el resultado final.
+    La primera barra son los ingresos brutos, la roja lo que se va en costes operativos y la última el beneficio neto que queda.
     </p>
     """, unsafe_allow_html=True)
 
@@ -1750,10 +1740,9 @@ with tab_finanzas:
 
 with tab_operacional:
     crear_descripcion_seccion(
-        "Eficiencia Operativa y Logística",
-        "Monitorea la eficiencia de tus operaciones diarias. Analiza tiempos de procesamiento de pedidos, rotación de inventario, "
-        "productividad por pedido y tasa de devoluciones. Estos indicadores te ayudan a identificar cuellos de botella y "
-        "oportunidades de optimización en tus procesos."
+        "Operaciones",
+        "El día a día de los pedidos: cuántos hay, cuántas unidades llevan, qué días se concentran y qué productos "
+        "salen más rápido."
     )
 
     crear_seccion_titulo("Métricas Operacionales")

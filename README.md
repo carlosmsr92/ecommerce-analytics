@@ -1,6 +1,6 @@
 # 📊 Análisis global de e-commerce
 
-**Dashboard profesional de Business Intelligence con Machine Learning y Análisis Estadístico para E-commerce Global**
+**Un dashboard para entender cómo va una tienda online que vende en 43 países: qué se vende, dónde, a quién y con qué margen.**
 
 > Autor: **Carlos Manuel Suárez Rivero (CMSR92)**  
 > Plataforma: Streamlit (dashboard) · FastAPI y PostgreSQL opcionales
@@ -9,13 +9,13 @@
 
 ## 🎯 Descripción
 
-Plataforma avanzada de Business Intelligence que analiza **472.211 transacciones** (diciembre de 2010 a octubre de 2025) con capacidades de:
+Analiza **472.211 transacciones** (de diciembre de 2010 a octubre de 2025) y las presenta en:
 
-- **9 Tabs de Análisis** interactivos y profesionales
-- **4 Modelos de Machine Learning** (Isolation Forest, K-Means, Correlación, Recomendaciones)
-- **Análisis Estadístico Robusto** con promedios móviles e indicadores de crecimiento
-- **100% Internacionalizado** en español profesional
-- **Filtros Avanzados** multi-dimensionales con selector personalizado de fechas
+- **9 pestañas** de análisis: resumen, países, evolución en el tiempo, productos, clientes, canales, machine learning, finanzas y operaciones
+- **Machine learning** para agrupar clientes (K-Means) y marcar transacciones fuera de lo normal (Isolation Forest)
+- **Tendencias** con medias móviles e indicadores de crecimiento
+- **Todo en español**, con los números en formato español
+- **Filtros combinables** por fechas, país, producto, cliente, canal y precio
 
 ---
 🔗 **Dashboard:** [ecommers.streamlit.app](https://ecommers.streamlit.app/)
@@ -62,22 +62,22 @@ ecommerce-analytics/
 
 | Tab | Descripción |
 |-----|-------------|
-| 🏠 **Resumen General** | KPIs principales, insights ejecutivos, evolución temporal |
-| 🌍 **Análisis Geográfico** | Mapas interactivos, distribución por país/región |
-| 📈 **Rendimiento & Análisis Temporal** | Indicadores de crecimiento, promedios móviles, momentum |
-| 📦 **Análisis de Productos** | BCG Matrix, categorías top, subcategorías |
-| 👥 **Segmentación de Clientes** | RFM, K-Means clustering, análisis de cohortes |
-| 📱 **Análisis de Canal** | Diagramas Sankey, conversión por dispositivo |
-| 🤖 **Machine Learning e IA** | Isolation Forest, anomalías, correlaciones |
-| 💰 **Análisis Financiero** | P&L waterfall, márgenes, rentabilidad |
-| ⚙️ **Métricas Operacionales** | Logística, cumplimiento, satisfacción |
+| 🏠 **Resumen General** | Indicadores principales, conclusiones automáticas y evolución en el tiempo |
+| 🌍 **Análisis Geográfico** | Mapa de ventas por país y ranking de países |
+| 📈 **Rendimiento & Análisis Temporal** | Crecimiento, medias móviles y ventas por día y hora |
+| 📦 **Análisis de Productos** | Productos que más venden, márgenes por categoría y matriz BCG |
+| 👥 **Segmentación de Clientes** | Segmentos RFM, grupos con K-Means, valor de vida y riesgo de abandono |
+| 📱 **Análisis de Canal** | Dispositivos, origen de las visitas, métodos de pago y diagrama de flujo |
+| 🤖 **Machine Learning e IA** | Transacciones fuera de lo normal, correlaciones y productos más comprados |
+| 💰 **Análisis Financiero** | Cuenta de resultados en cascada, márgenes y beneficio |
+| ⚙️ **Métricas Operacionales** | Pedidos, unidades por pedido y rotación de productos |
 
 ### 2. **Machine Learning**
 
-- **Isolation Forest:** Detección de anomalías en transacciones
-- **K-Means:** Segmentación automática de clientes (RFM)
-- **Análisis de Correlación:** Identificación de patrones ocultos
-- **Sistema de Recomendaciones:** Productos relacionados
+- **Isolation Forest:** marca las transacciones que se salen de lo normal
+- **K-Means:** agrupa a los clientes según cuándo, cuánto y cada cuánto compran
+- **Correlaciones:** qué variables se mueven juntas
+- **Productos más comprados:** el punto de partida para un futuro sistema de recomendaciones
 
 ### 3. **Filtros Avanzados**
 
@@ -103,7 +103,7 @@ ecommerce-analytics/
 
 ### Formato
 
-- **Primario:** Parquet (optimizado para performance)
+- **Principal:** Parquet (ocupa poco y se lee rápido)
 - **Backup:** PostgreSQL (opcional)
 
 ---
@@ -111,8 +111,8 @@ ecommerce-analytics/
 ## 🛠️ Tecnologías
 
 - **Dashboard:** Streamlit, pandas, NumPy
-- **Visualización:** Plotly, Folium, Matplotlib, Seaborn
-- **Machine learning:** scikit-learn (Isolation Forest, K-Means), XGBoost
+- **Visualización:** Plotly
+- **Machine learning:** scikit-learn (Isolation Forest, K-Means)
 - **API y base de datos (opcionales):** FastAPI, SQLAlchemy, PostgreSQL
 
 ## Ejecutar en local
